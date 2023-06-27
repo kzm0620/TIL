@@ -142,3 +142,46 @@ Javaは世界中にたくさんの開発者がいる有名な言語。
  
 ●型変数について　
 　　　System.out.println("佐藤さんは" + 23 + "歳です");　➔　佐藤さんは２３歳です　　
+
+●計算時の自動型変換
+　　　System.out.println(5.0 / 2); ...... 5.0 / 2.0  double型に自動変換される。
+
+●int型の同士の計算
+ int型の割り算で正確な値を出したい時はどうすればよいか
+　　int number1 = 13;
+ int number2 = 4;
+ System.out.println(number1 / number2); ......3 (3.25とはならない)
+　　⬇
+ int型の値から最終的に計算結果を得たい場合、どちらか１つをキャストしてあげる。
+ System.out.println((double)number1 / number2);  ......3.25 (double型の計算結果)
+ number1の値がdouble型に変換される　　13.0　/ 4
+ nuuber2の値がdouble型に変換される 13.0 / 4.0
+
+
+●模擬試験
+
+ class Main {
+  public static void main(String[] args) {
+    // 変数nameに、好きな名前を代入してください
+    String name = "taro";
+    
+    // 変数ageに、好きな年齢を代入してください
+    int age = 23;
+    
+    // 変数heightに、好きな身長を代入してください（例: 1.2）
+    double height = 170;
+    
+    // 変数weightに、好きな体重を代入してください（例: 20.0）
+    double weight = 60;
+    
+    // 変数bmiに、BMIを計算して代入してください
+    double bmi = weight / height / height;
+    
+    // 名前、年齢、身長、体重、BMIに関する情報を出力してください
+    System.out.println("名前は" + name + "です");
+    System.out.println("年齢は" + age + "歳です");
+    System.out.println("身長は" + height + "mです");
+    System.out.println("体重は" + weight + "kgです");
+    System.out.println("BMIは" + bmi + "です");
+  }
+}
