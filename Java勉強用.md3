@@ -1,0 +1,82 @@
+● switch文
+　　　条件分岐の構文のひつで、条件の値がcaseの値と一致するときに処理が実行される。
+　　　switch(条件の値) {
+    case 値　１；
+　　　　　　　　　　　　処理；
+　　　　　　　　　　　　break;
+    case 値　２；
+　　　　　　　　　　　　処理；
+　　　　　　　　　　　　break;
+　　　　　　　　　　　　　・
+　　　　　　　　　　　　　・
+　　　　　　　　　　　　　・
+● if文とswitch文
+　変数　ｎ　の値がcaseの値　１　と一致しているので　「大吉です」　と出力される。
+　if文の条件式の中で　n == 1 といしているのと似ている。
+
+　　int n = 1
+ if (n ==1) {
+  System.out.println("大吉です");
+ } elseif (n==2) {
+  System.out.println("吉です");
+ }
+-----------------------------------
+ int n = 1; .........　一致
+ switch (n) {
+  case 1: ...........　一致
+    System.out.println("大吉です");
+    break;
+  case 2:
+    System.out.println("吉です");
+    break;
+ }
+
+●　brek
+  switch文ではbreakが非常に重要でswitch文を終了する命令。
+　　　　breakがないと合致したcaseの処理を行った後、その次のcaseの処理も実行していく。　　　　
+
+●　default
+  switch文では、どのcaseとも一致しなかったときに実行する処理を
+　　　　defaultに指定するとこができる。　if文のelseに似ている。
+
+　　　int n = 0;
+ 　switch (n) {
+ 　 case 1: ...........　①変数　ｎ　が一致しない
+    System.out.println("大吉です");
+    break;
+ 　 case 2: ...........②変数　ｎ　が一致しない
+ 　   System.out.println("吉です");
+    　break;
+　　　　　default:　...........③defaultの処理を実行する。
+ 　   System.out.println("凶です");
+    　break;
+ 　　　}
+
+●　繰り返し処理
+　　　一定の処理を自動化すること
+
+●　while　文
+　　　　繰り返し処理の代表的なものにwhile文がある。「~の間」という意味。
+　　　　「条件がtrueの間、{}内の処理を繰り返すことができる。
+
+　　　while　(条件)　{
+    繰り返す処理；
+　　　}
+
+●　while　文を使ってみる
+　　　int i = 1 ;  .......変数　i　を定義
+  while (i <= 5 ) {
+    System.out.println(i + "回ジャンプしました");
+　　　　　　　　i ++ ;  .........i　に　１　を追加していく
+  }
+
+●　無限ループ　
+　　先ほどのwhilde文で変数に　１　を足し忘れると　１　のまま変わらず、
+　　　while文で条件がtrueだと繰り返し処理が永遠と行われて無限ループになってしまう。
+　　必ずどこかで条件がfalseになるように実装する。
+
+　　１回ジャンプしました
+　　１回ジャンプしました
+　　１回ジャンプしました　　........ 無限ムープになる
+
+●　
