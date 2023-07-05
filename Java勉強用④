@@ -1,0 +1,116 @@
+●　配列
+　　　　　配列とは変数のセットのようなもの。
+　　　　　変数が１つしか値を扱えないのに対し、配列は”複数の値をまとめておくことができる”。
+　　　　　配列は仕切りのある箱のようなもので、それぞれのスペースに値が入っている。
+　　　　　配列に入っているそれぞれの値のことを”要素”と呼ぶ。
+
+●　配列の作り方
+　　　　　配列は　｛｝　の中に、コンマ(,)　で区切りながら値を書くことで作ることができる.
+　　　　　[] と　{}　が混同しないように気をつける
+　　　　　
+　　　　int型の配列　　........ int [] numbers = {5,13,29};
+  String型の配列　...... String [] names = {"John", "Kate", "Bob"};
+
+●　インデックス番号と要素の取得
+　　　　　配列の要素には前から順に「０，１，２....」と数字が割り振られている。
+　　　　　これをインデックス番号と呼ぶ。　インデックス番号は　０　から始まる点に注意する。
+　　　　　配列の要素は　”配列名　[インデックス番号]"　とすることで取得するこができる。
+
+　　　　　String [] names = {"John", "Kate", "Bob"};
+　　　　　System.out.println ("私の名前は"　+ names[0] + "です");
+                                        ---
+                                     インデックス番号を指定
+　　　　　⬇
+　　　　　コンソール　　　　私の名前は　　John　です　
+
+●配列の要素を上書きする
+　　　　　　下図のように、特定の要素に値を代入することで、要素を上書きすることが可能。
+
+   String [] names = {"John", "Kate", "Bob"};
+                       ----   ------  -----
+            　　　　　　インデックス　　①　　　　　　　　　　　　②　　　　　　　　　　　　　③
+　　　　　　System.out.println(names[0]);
+   names[0] = "William"; ⬅０番目の要素を上書き
+   System.out.println(names[0]);
+
+   ⬇
+　　　　　　コンソール　　　John William  と出力される
+
+●　要素の上書きにおける注意点
+　　　　String [] names = {"John", "Kate", "Bob"};
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　０　　　　　　　　　　　　　　　１　　　　　　　　　　　　　２
+  name [3] = "Julia";  ⬅ーーーーーーエラー発生！！
+　　　　　　　　　　　　　　　---存在しない要素には値を代入できない
+
+●　配列を繰り返し
+  配列ではそれぞれの要素に対し同様の処理を行うことがしばしばある。
+  用いない場合は非常に面倒、用いると配列の要素の値を簡単に一覧表示できるようになる。
+
+●　配列をfor文
+　　　　配列の値を出力ー　for文を用いない場合
+　　　　　　String [] names = {"john", "Kate", "Bob"};
+   System.out.println ("Hello " + names [0]);
+   System.out.println ("Hello " + names [1]);
+   System.out.println ("Hello " + names [2]);
+  
+　　　　配列の値を出力ー　for文に書き換え
+　　　　　　String [] names = {"John", "Kate", "Bob"};
+   for (int i = 0; i < 3; i++) {
+     System.out.println ("Hello " + names [i]);
+     ------------------------------------------
+     ➔　i　が　「０、１、２」の間、繰り返される
+　　　　　　｝
+
+●　length
+　　　　配列には要素の数を数える　length　という機能が備わっている。　
+　　　　「配列.length」のようにドットで繋いで用いる。
+　　　　先ほどのfor文の条件式「　i　<　3　」を下図のように書き換えることができ、
+　　　　配列の要素を気にする必要がなくなる。
+
+　　　　　String [] names = {"john", "Kate", "Bob"};
+　　　　　System.out.println (names.length);
+　　　　　⬇
+　　　　　コンソール　　　　　３　　　......配列の要素の数が出力される　　
+
+●　length　も用いた繰り返し処理
+　　　　　String [] names = {"John", "Kate", "Bob"};
+   for　(int　ｉ　= 0; i　<　names.length; i++) {
+     System.out.println ("Hello " + names[　i　]);
+   }
+
+●拡張　for文の文法
+　　　　for文は配列用に特別な構文　（拡張for文）　を用意している。
+　　　　これを使用すればよりシンプルに記述することができる。
+
+　　　　for　（データ型　変数名　：　配列名）　｛
+　　　　　　　　繰り返す処理
+　　　　　｝
+
+●　拡張　for文のイメージ
+　　　　　配列の各要素の値を順に代入する変数を用意する。
+　　　　　下図の例では、繰り返しの度に、変数nameに配列nameの要素が順に代入されていく。
+　　　　　拡張　for文では、自動的に要素の数だけ繰り返し処理が行われる。
+
+　　　　　String [] names = {"John", "Kate", "Bob"};
+　　　　　for　(String name: names) {
+      データ型　　　変数名　　　配列名
+     System.out.println (name);
+   }
+
+●　普通の　for文との比較
+　　　　　普通のfor文ではインデックス番号を用いて配列の要素を取得しなければならないが、
+　　　　　拡張for文では変数に配列の要素自体が代入される。
+　　　　　拡張for文のほうがシンプルに記述できることが多いで必ず覚えておく。
+
+　　　通常のfor文
+　　　　　　　String [] names = {"John", "Kate", "Bob"};
+　　　　　　　　　　   for　(int　ｉ　= 0; i　<　names.length; i++) {
+     System.out.println (names[　i　]);
+   }
+　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+　　　　拡張for文へ書き換え
+　　　　　　　　　String [] names = {"John", "Kate", "Bob"};
+　　　　　　　　　　　　for(String name: names) {
+        System.outprintln(name);
+      }
+  ➡コンソール　でどちらも　　　John Kate Bob　　　と出力される
