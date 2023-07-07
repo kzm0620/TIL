@@ -1,0 +1,108 @@
+【メソッドとクラス】
+
+⚫︎メソッドのイメージ
+　　　　　メソッドとは何らかの処理を割り当てた部品である。
+　　　　　これまでmainメソッドだけに記述してきた処理部をメソッドに切り分けていく。
+　　　　　Javaのファイルを実行すると、自動的にmainメソッドが実行される。
+　　　　　mainメソッドの処理をメソッドに切り分けると、mainメソッドが各メソッドに指示を出し、
+　　　　　各メソッドが個々のしょろを実行するという構造になる。
+
+　　　　　main　メソッド　　▶︎  メソッド　１
+　　　　　　　　　　　　　　　　　　　　　　　　　　　▶︎  メソッド　２　　
+　　　　　　　　　　　　　　　　　　　　　　　　　　　▶︎　　　　メソッド　３
+
+⚫︎メソッドを使ったプログラム
+　　　　　　メソッドを切り分けることでコードが整理されて見やすくなる。
+　　　　　　メソッドは何度でも使いまわすことができる。
+
+● メソッドを呼び出す
+　　　　　　helloというメソッドを定義し、mainメソッドでhelloメソッドを呼び出している。
+
+　　　　　class Main {
+    public static void main(String[]args) { .....①
+　　　　　　　　　　　　hello(); .......②
+    }
+    public static void hello() {　　　　　　　　　　　　　　　　　　　　.......
+      System.out.println("Hello World");  ....... ③
+    }                                     .......
+
+　　　　　①　mainメソッドが呼ばれる
+　　　　　②　mainメソッドの中で、hellloメソッドが呼ばれる
+　　　　　③ helloメソッドの中で、System.out.println("Hello World"); が実行される。
+
+● メソッドの定義　
+　　　　　public static void　は定型として覚えておく。
+　　　　　ブロック　（{}で囲まれた部分）の中に、そのメソッドが行う処理を記述する。
+　　　　　メソッドの名前は好きに付けれるが、処理の内容が想像できよような名前にすルこと。
+
+  メソッドの定義
+　　　　　public static void メソッド名（） { 
+     実行する処理；
+　　　　　}
+
+　　　　　public static void ①hello（） { 　　　　　　　　　　　　　　　　　　　　　　　　　　　①　メソッド名
+　　　　　　　　　　　②System.out.println("Hello World");　　　　　　　　　　②　実行する処理
+   }
+
+● メソッドの呼び出し
+　　　　　　class Main {
+     public static void main(String[]args) {
+       hello();
+       hello();  ........「メソッド名()」とする
+     }
+     public static void hello() {　
+       System.out.println("Hello World");
+     }
+   }
+　　　　　　▶︎コンソール　　　　　　　Hello World
+               Hello World
+
+● 引数とは
+　　　　　　引数とはメソッドに与える追加情報のようなもの。
+　　　　　　メソッドを呼び出す時に、一緒に引数を渡すとメソッドの中でその値を利用することができる。
+
+● メソッドに引数を渡す
+　　　　　メソッド（引数）としてメソッドを呼出ます。　渡された引数は、
+　　　　　メソッドの仮引数で指定した変数に代入され、その変数はメソッドの処理の中で用いることができる。
+
+   class Main {
+     public static void main(String[]args) {
+       hello (①"Bob");
+     }
+     public static void hello(String ②name) {
+       Ststem.out.println(③name　+ "さんこんにちは");
+     }
+   }
+　　　　　　コンソール　▶︎　Bobさんこんにちは　　　　　　（①→②→③）　　　　
+
+● 複数の引数をもつメソッド
+　　　　　引数は複数渡すこともでき、仮引数をコンマ（,）で区切って定義する。
+　　　　　引数は左から「第一引数、第二引数…」というように呼ぶ。
+
+   public static vid メソッド名(データ型　　変数名1, 　データ型　変数名2)　{
+     実行する処理；
+   }
+-------------------------------------------------------------
+   public static vid printPrice(String item, int price) {
+     Syetem.out.println(item + "は" - price + "円です");
+   }
+
+● 複数の引数を渡す
+
+    class Main {
+      public static void main (String[]args) {
+        printPrice("ピザ",3000);
+        printPrice("コーラ",150);
+      }
+      public static void printPrice(String item, int price) {
+        System.out.println(item + "は" - price + "円です");
+      }
+
+    コンソール　▶︎ ピザは３０００円です
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　コーラは１５０円です
+　　　　　　　　("コーラ")　▶︎ String item,　　　　　（150）　▶︎ int price　　.....複数の引数を渡している
+
+⚫︎ 引数を渡す順番　
+　　　　　仮引数は任意に順番を決められるが、メソッドを呼び出す時は仮引数の順番通りに渡さなければならない。
+　　　　　
+　　　　　　　
