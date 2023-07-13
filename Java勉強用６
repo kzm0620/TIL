@@ -1,0 +1,101 @@
+● クラスについて
+　　　　　クラスはメソッドという小さな部品をまとめる、より大きな部品である。
+　　　　　他のクラスのメソッドを使用することも可能。
+　　　　　①クラス内でメソッドを呼びだす
+　　　　　②他のクラスのメソッドを呼びだす
+
+● 他クラスのメソッドを呼びだす
+　　　　　下図の例には MainクラスとPersonクラスがあり、
+　　　　　MainクラスのmainメソッドでPerson.hello()としている。
+　　　　　この様に、クラス名.メソッド名()とすることで、他クラスのメソッドを呼びだすことができる。
+
+　　　　　class Main {
+     public static void main(string[]args) }
+       Person.hello();  .........ドットでPersonクラスのhellomメソッドを呼びだす
+     }
+   }
+
+　　　　⬇︎　　⬇︎　　⬇︎　　⬇
+
+　　　　　　class Person {
+     public static void hello() {
+       System.out.println("Hello World");
+     }
+   }
+
+● クラスの定義
+　　　　　クラスの定義は「class クラス名」　とする　クラス名の最初の文字は大文字にし、
+　　　　　ファイル名は「クラス名.java」　としなければならない。
+
+　　　　　クラスの定義
+　　　　　class クラス名　{
+    //ここにメソッドを定義
+　　　　　}
+
+　　　　　命名規則
+　　　　　Person.java  ...........クラス名
+　　　　   class Person {
+     }
+
+●　Personクラスを作る
+　　　　　personクラスを作り、Mainクラスのmainメソッド以外をPersonクラスに移す。
+　　　　　こうすることで、mainメソッド以外の「ロジック（論理）」部分をPersonクラスにまとめ、
+　　　　　実行部分とロジック部分を切り分けることができる。
+　　　　　Mainクラスは実行用のクラス、Personクラスはロジックをまとめるクラス
+　　　　　という役割分担が明確になる。
+
+　　　　[Main.java]
+　　　　　　class Main {
+     public static void main(String[]args) }
+　　　　　  　…
+　　　　　   } 
+     public static void printDate(String name,...) {
+     …
+     }
+     …
+　　　　　　  public static boolean isHealthy(double bmi) {
+  　　  …
+　　　　　　  }
+   }
+
+ ⬇︎ ⬇︎ ⬇︎ ⬇︎ ⬇︎
+
+　　　　[Person.java]
+   class Person {
+     pubulic static void printaaData(String name,...) {
+     …
+　　　   }
+     …
+　　　　　　　　　　pubulic static void isHelthy(doublu nbmi) {
+     …
+　　　　　　　　　}
+
+●　Personクラスのメソッドを呼びだす
+　　　　　　class Main {
+     public static void main(String[]args) {
+       String name = Person.fullName("Kate", "Jones");
+       System.out.println(name);
+     }
+   }
+
+    calass Person {
+      …
+　　　　　　　　　　　public static void fullName(String firstName, String lastName) {
+       return firstName + "" + lastaName;
+      }
+    }
+
+   コンソール▶︎　Kate Jones
+
+● クラスについての補足
+　　　　　javaはファイルではなく、クラスを実行する。
+　　　　　また実行時にmainメソッドが呼ばれるが、正確にはmainメソッドを持つクラスしか実行できない。
+　　　　　（mainメソッドのないクラスは、他クラスから呼び出して使う）
+　　　　　またクラス名に関係なく、実行時にはmainメソッドが呼ばれる。
+　　　　　（Mainクラスだからmainmメソッドが呼ばれる、という訳ではない）
+
+　　　　　Main.javaの実行
+　　　　　Mainクラスを実行すると　▶︎　mainメソッドが自動で実行される
+
+　　　　　Person.javaの実行
+　　　　　Personクラスを実行すると　▶︎ mainメソッドがないためエラー　（他のクラスから呼び出して使う）
