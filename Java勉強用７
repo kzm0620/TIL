@@ -35,3 +35,49 @@
 
    コンソール　▶︎　最大値は　８　です
 
+● コンソールへの入力とScanner
+　　　　　これまではコンソールに値を出力してきたが、値を入力してその値を使うことができる。
+　　　　　コンソールへの入力を受け取るにはScannerというライブラリを用いる。
+　　　　　Scannerは「import java.util.Scanner」　と読み込む。
+
+   [Main.java]
+   importjava.util.Scanner; ........外部ライブラリ「Scanner」を読み込む
+   class Main {
+     public static void main(Stiring[] args) {
+      …
+     }
+   }
+
+●　Scanerrの処理の流れ
+　　　　　scanner.next()が呼ばれると、一旦処理が中断しコンソールに値が入力されるのを待つ。
+　　　　　下図ではコンソールに入力された値をscanner.next()が受け取り、変数nameに代入している。
+　　　　　（下図のSystem.out.printは、改行せずに値を出力する命令）
+
+    pubulic static void main(String[] args) {
+      Scanner scanner = new Scanner(System.in);
+      System.out.print("あなたの名前:");
+      String name = scanner.next();
+                          ⬇︎
+　　　　　　　　　　　　処理が一旦中断し、値が入力されたら次の処理へ進む
+      System.out.print("あなたの名前は" + name + "です");
+    }
+
+　　　　　　　　コンソール　▶︎ あなたの名前：　太郎　▶︎ あなたの名前は太郎です
+
+● 数値の入力を受け取る
+　　　　　　Scannerを用いて、整数と小数を受け取る方法は下図。
+　　　　　　整数を受け取るメソッドは　nextintメソッド
+　　　　　　小数を受け取るメソッドは　nextDoubleメソッド
+
+   public static void main(Stirng[] args) {
+     Scanner scanner = new Scanner(System.in);
+     System.out.print("年齢:");
+     int age = scanner.nextInt();  .........整数を受け取る
+     System.out.print("体重:");
+     double weight = scanner.nextDouble(); ......小数を受け取る
+     System.out.println("あなたの年齢は" + age + "歳です");
+     System.out.println("あなたの体重は" + wight + "kgです")；
+   }
+
+　　　　　　コンソール　▶︎　年齢　：１４　　　　　　体重　：　４０
+　　　　　　　　　　　　　　　　　　　　　　　　　あなたの年齢は１４歳です　　　　　　あなたの体重は４０kgです
