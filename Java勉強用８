@@ -73,7 +73,7 @@
   class Main {
     public static void main(String[] args) {
      Person person = new Person();
-     クラス名　　　変数名
+     クラス型　　　変数名
      }
   }
 
@@ -82,3 +82,231 @@
 　　　　　　設計図をもとに同じようなオブジェクトを大量に作ることができる。
 　　　　　　作られたインスタンスは全て同じ種類の情報（中の値はインスタンスごとに変わり得る）と
 　　　　　　振る舞いを持つ。
+
+   class Main {
+     public static void main(Stirung[] args) {
+       Person person1 = new Person();
+       Person person2 = new Person();
+       Person person3 = new Person();
+     }
+    }
+
+●　インスタンスの情報と振る舞い
+　　　　　インスタンスの情報にあたるものを　「インスタンスフィールド」、
+　　　　　振る舞いにあたるものを　「インスタンスメソッド」　と呼ぶ。
+
+●　インスタンスメソッドを定義する
+　　　　　インスタンスの振る舞いは、プログラム上ではメソッドで表現する。
+　　　　　このインスタンスのメソッドのことを　「インスタンスメソッド」　と呼ぶ。
+　　　　　インスタンスメソッドは　「public 戻り値の型 メソッド名（）」　と定義する。
+　　　　　過去に学んだメソッドと違い　static　がないが後ほど振り返る。
+
+  class Parson {
+    public void hello() {
+            ⬇︎    ⬇︎
+　　　　　　　　　　　　　　　　　戻り値の値　　　メソッド名
+      System.out.println("こんにちは"）;
+    }
+  }
+
+●　インスタンスメソッドの呼び出し
+　　　　　インんスタンスメソッドは、クラスに定義しても実際は各インスタンスに属するイメージを持っておく。
+　　　　　それゆえ、インスタンスメソッドはインスタンス（を代入した変数）に対して呼び出す。
+　　　　　過去で学んだメソッド同様ドットを使って呼び出すが、「インスタンス名.メソッド名（）」　とする。
+
+   [Main.java]
+   Person person1 = new Person();
+   Person person2 = new Person();
+   person1.hello(); ......インスタンスに対して呼び出す
+   person2.hello(); ......　　//
+
+●　インスタンスフィールドの定義
+　　　　　インスタンスフィールドとはインスタンスが持つ情報のこと。
+　　　　　インスタンスフィールドは、情報を格納しておく　「変数」　にすぎない。
+　　　　　その変数はクラスの一番上に定義する。
+　　　　　注意点として、　「public データ型　変数名」　というように変数定義の前にpublicをつける。
+　　　　　メソッドやフィールドのpublicの意味はまた後ほど学習する。
+
+   class Person {
+     public String name; ........名前を入れる変数を定義
+   }
+
+●　インスタンスのフィールド
+　　　　　　　インスタンスフィールドも各インスタンスに属する。
+　　　　　　　インスタンスを生成するときに、各インスタンスにフィールドがコピーされるイメージを持っておく。
+
+●　インスタンスフィールドへのアクセス
+　　　　　インスタンスフィールドには、「インスタンス名.フィールド名」　というように、
+　　　　　インスタンスに対してドットを用いてアクセスする。
+　　　　　ドットを用いること以外は変数とあまり変わらない。
+　　　　　下図のように、値の取得とセット（代入）が可能である。
+
+   Person person1 = new Person(); 
+   person1.name = "Suzuki";  ........nameに値をセット
+   System.out.println(person1.name); .......nameの値を取得
+   //結果　：　Suzuki
+
+●　クラスの中でインスタンスを扱う
+　　　　　インスタンスフィールドnameの値を用いて、helloメソッドで
+　　　　　「こんにちは、私は〇〇です」　と自分の名前とともに出力するようにしてみる。
+
+   [Person.java]
+   class Peson {
+     public String name;
+     public void hello() {
+       //こんにちは、私は〇〇です
+     }
+   }
+
+●　this
+　　　　　メソッド内でインスタンスフィールドにアクセスするためには　「this」　という特殊な変数を用いる。
+　　　　　thisはクラス内のメソッドの定義の中でのみ使用できる。
+　　　　　thisはメソッドが呼ばれた時に、そのメソッドを呼び出しているインスタンスに置き換えられる。
+
+   Pesrson person = new Person();
+   person.name = "Suzuki";
+   person.hello();
+　　　　　　　　　　※
+   // 結果　：　こんにちは、私はSuzuki　です
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   class Person {
+     public String name;
+     public void hello() {
+       System.out.println(”こんにちは”、私は + this.name + "です");
+                                           ※(Suzuki)
+     }
+   }
+
+●　インスタンスフォールドへの値のセット
+　　　　　ここまではインスタンスを生成してから、nameフィールドへの値をセットしてきたが、
+　　　　　これはインスタンスフィールドが増えると面倒になる。
+　　　　　インスタンスフィールドへの値のセットが楽になる方法がある。
+
+  Pesrson person = new Person();
+  person.name = "Suzuki";  ........毎回セットするのが面倒
+  Pesrson person = new Person();
+  person.name = "Kato";    ........毎回セットするのが面倒
+
+●　コンストラクタ
+　　　　　　クラスには、コンストラクタというものがある。
+　　　　　　コンストラクタとは、newを使ってインスタンスを生成した時に、
+　　　　　　「自動で呼び出される」　特別なメソッドです。
+
+　　　　　　インスタンス生成（new） ▶︎　直後に　▶︎ 　コンストラクタ実行
+
+●　コンストラクタの定義
+　　　　　コンストラクタは特別なメソッドのため、定義方法が決まっている。
+　　　　　①コンストラクタ名はクラス名と同じにする。
+　　　　　②戻り値を書いてはいけない（voidも書かない）
+　　　　　この二つの決まりを守れば、コンストラクタの完成。
+
+   class クラス名 {
+     クラス名() {                       ........
+       //インスタンスの生成時に行いたい処理   .......コンストラクタ
+     }                                ........
+   }
+
+● コンストラクタの具体例
+　　　　　以下の例は、newでインスタンスを生成したときにコンストラクタが呼び出される例。
+　　　　　小俺だけではまだインスタンスフィールドの値を楽にセットする、にはなっていないので注意。
+
+  [Main.java]
+  Person person = new Person();
+            ⬇︎
+  [Person.java]
+  class Person {
+    pubilc String name;
+      Person() {
+        System.out.println("インスタンスが生成されました");
+      }
+            ⬇︎
+　　　　　インスタンスが生成された直後に実行される
+
+●　フィールドに値をセットする
+　　　　　コンストラクタを用いて、インスタンスフィールドへの値のセットの面倒さを解決していく。
+　　　　　newでインスタンスを生成した後に自動で実行されるコンストラクタの中で、
+　　　　　各フィールドで値をセットする様にする。
+
+   [main.java]
+   Person person = new Person();
+   person.name = "Suzuki";  ........コンストラクト内でセットしたい
+　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Person.java]
+   class Person {
+     public String name;
+     Person() {
+       //ここにコンストラクトをセットする
+     }
+   }
+
+●　コンストラクト内に情報を渡す
+　　　　　newでインスタンスを作る際、「new クラス名（）」　の中には引数を渡すことができる。
+　　　　　そしてその引数は直後に呼び出されるコンストラクタに受け渡される。
+　　　　　こうしてコンストラクタに任意の情報を渡すことができる様になる。
+
+●　コンストラクタでフィールドをセットする
+　　　　　インスタンスを生成する際に、インスタンスにフィールドをセットしたい値を数に渡し、
+　　　　　　コンストラクトでセットするようにしてあげる。
+　　　　　コンストラクトでも、thisを用いてインスタンスを利用することができる。
+
+   [main.java]
+   Person person = new Person("Suzuki");
+                                　　①
+   System.out.println(person.name);
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Person.java]
+   class Person {
+     public String name;
+     Person(String name) {
+                    ②
+       this.name = name;
+       　　　　　　　　　　　　④      ③
+     }
+    ①〜④の流れでセットする
+
+●　インスタンスフィールドを定義する
+　　　　　まずはインスタンスフィールドを定義する。
+　　　　　実際の開発でも、インスタンスにどんな情報を持たせるかをまず考えて、情報を書き出す。
+　　　　　プログラムの中では必要最低限の情報を持たせるようにする。
+
+   Personオブジェクト　　の中身
+　　　　　　　　　　インスタンスフィールド　　　▶︎  firstname,lastname,age,hegth,weigth...etc
+
+●　コンストラクトを作る
+　　　　　インスタンス生成時にインスタンスフィールドの値をセットできるように、コンストラクトを作る。
+
+   [Person.java]
+     class Person {
+       public String firstName;
+       public String lastName;
+         …
+       Person(String firstName,  String lastName, ....) {
+         this.firstName = firstName;
+         this.lastName = lastName;
+         …
+       }
+     }
+
+●インスタンスメソッドを定義する、書き換える
+　　　　　過去では引数で値を渡していたが、この必要はもうない。
+　　　　　インスタンスメソッドは、thisを使って自分のインスタンスフィールド（情報）を取得できるから。
+
+  [今まで]
+  class Person {
+    …
+    pbulic static String fullName(String fistName....) {
+      return firstName + .......;
+    }
+  }
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [新しい]
+  class Person {
+    public String firstName;
+      …
+    public String fullName() {
+      return this.firstName + ........;
+    }
+  }
+
+
+　　　　　
