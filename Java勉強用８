@@ -307,6 +307,102 @@
       return this.firstName + ........;
     }
   }
+●　他のインスタンスを呼び出す
+　　　　　インスタンスが自分の情報をコンソールに出力するprintDataという
+　　　　　インスタンスメソッドを定義する。
+　　　　　printDataメソッドは、fullNameメソッドやbmiメソッドちいった他のメソッドを呼び出す。
+　　　　　インスタンスを指すthisを使えば、ほかのインスタンスメソッドを呼び出すことも可能。
 
+  [今までのコード]
+   public static void printData(.....,double height, double weight) {
+         …
+      double bmi = bmi(height,weight);
+         …
+   }
+   public stsatic void bmi(double height, double weight) {
+      return weight / height / height;
+   }
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+ 
+  [新しいコード]
+   public void printData() {
+          …
+     double bmi = this.bmi();
+          …
+   }
+   public double bmi() {
+     return this.weight / this.height / this.height;
+   }
 
-　　　　　
+●　クラスフィールドとその定義
+　　　　　クラスに属するクラスフィールドというものもある。
+　　　　　クラスフィールドには、static　をつけて　「public static データ型　変数名」　と定義する。
+
+   class Person {
+     public static データ型　変数名； .........クラスフィールドにはstaticをつける
+   }
+
+●　クラスフィールドの具体例
+　　　　　何人分のインんスタンスを生成したか数えるために、countというフィールドで
+　　　　　インスタンスの生成回数を保存するするようにしてみる。
+　　　　　countは個々のインスタンスが持つものではなく、Personクラスが持っていれば良いので
+　　　　　クラスフィールドにしてあげる。
+
+   class Person {
+     public static int count; ..........クラスフィールド
+     public String firstName; ..........インスタンスフィールド
+     public String lastName;  ..........インスタンスフォールド
+        …
+   }
+
+●　フィールドに初期値を設定する
+　　　　　フィールドには、定義時に初期値を設定しておくことができる。
+　　　　countはインスタンスの生成回数なので、下図のように定義時に０を代入しておく。
+
+   class Person {
+     public static int count = 0; ........初期値を入れておく
+         …
+　　　　　　}
+
+●　クラスフィールドのアクセス
+　　　　　クラスフィールドには　「クラス名.クラスフィールド名」　でアクセスすることができる。
+　　　　　下図ではコンストラクタで、countに１を足している。
+　　　　　この様にすればインスタンスの生成に度にcountに１が追加されていくので
+　　　　　[Main.java]でcountの値がへんかしているのがわかる。
+
+  [Main.java]
+   class Main {
+     public static void main(String[] args) {
+       System.out.println("合計" + Person.count + "人です");
+       Person person1 = new Person(.....);
+       System.out.println("合計" + Person.count + "人です");
+     }
+   }
+　　　コンソール　▶︎　合計０人です　　　合計１人です
+　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Person.java]
+    class Person {
+      public static int count = 0;
+         …
+      Person (String firstName,.......) {
+        Person.count ++;
+      }
+    }
+
+●　クラスに属するメソッド
+　　　　　クラスフィールドがクラスに属するフィールドであるように、クラスに属するメソッドもある。
+　　　　　これをクラスメソッドと呼ぶ。
+　　　　　クラスメソッドの定義は、「public static 戻り値の型　メソッド名()」　とする。
+
+   [Person.java]
+   class Person {
+     public static 戻り値の値　メソッド名() {  .......クラスメソッドにはstaticを付ける
+       //処理
+     }
+   }
+
+●　クラスメソッドの呼び出し
+　　　　　これまで学習してたメソッドにはstaticがついていたが、実はこれらは全てクラスメソッドである。
+　　　　　クラスメソッドは　「クラス名.メソッド名」　と呼び出す。
+　　　　　これはクラスメソッドがクラスに属しているため。
+　　　　　クラスメソッドはインスタンスを生成しない状態でも呼び出すことができる。
