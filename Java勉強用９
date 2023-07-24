@@ -1,0 +1,248 @@
+●　ミドルネームを追加する
+　　　　　インスタンスがmiddleNameというフィールドも持つようにする。
+　　　　　コンストラクタの引数に不用意にmiddleNameを追加してしまうと、
+　　　　　middleNameを持たない人はインスタンスを生成する時にエラーが発生してしまうので注意。
+
+  [Main.java]
+   class Main {
+     public static void main(String[] args) {
+       Person person1 = new Person("Kate","Jones",.....) .......引数５こ　エラー発生
+       Person person2 = new Person("John","Bob","Kevin",....) ..引数６こ　エラーなし
+　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [Person.java]
+   class Person {
+     public String middleName;
+     Person(String firstName, String middleName, String last Name,...... )
+     (middkeNameを追加すると、引数は６こになる)
+         …
+
+●　コンストラクタのオーバーロード
+　　　　　この問題を解決するために、コンストラクタをオーバーロードすることができる。
+　　　　　オーバーロードとは、引数の型や数が違えば同名のメソッドを定義できる仕組みでした。
+　　　　　midlleNameを引数に受け取らないものと、受け取るもの、２つのコンストラクタを定義すれば
+　　　　　javaは渡された引数に合わせて適切なコンストラクタを自動で呼び出してくれる。　
+
+●　コンストラクタの中身に重複
+　　　　　コンストラクタのオーバーロードをしたのはいいが、２つのコンンストラクタの中身はほとんど重複している。
+　　　　　コードの重複は修正などを大変にてしまうよくないコードである。
+
+  [Person.java]
+   class Person {
+       …
+     Person(String firstName,.......,double weight) {
+       Person.count ++;             .......
+       this.firstName = firstName;  .......重複部分
+            …                       .......
+       this.weight = weight;        .......
+     }
+
+   コンストラクタの中身（続き）　⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎
+
+     Person(String firstName, String middleName, .....double weight) {
+       Person.count ++;　　　　　　　　　　　　　　　　　　　　　　　　　 ........
+       this.firstName = firstName;  ........重複部分
+            …                       ........
+       this.weight = weight;        ........
+       this.middleName = middleName; ........ここだけ異なる
+     }
+
+●　他のコンンストラクタを呼び出す
+　　　　　this()をすると、コンストラクタから他のコンストラクタを呼び出すことができる。
+　　　　　this()はコンストラクタを呼び出すための特別なメソッドで、()に引数を渡すことが可能。
+　　　　　また、thisはコンストラクタの先頭でしか呼び出せない。
+
+  [Person.java]
+   class Person {
+       …
+     Person(String firstName,.......,double weight) {
+       Person.count ++;             .......※
+       this.firstName = firstName;  .......※
+            …                       .......※
+       this.weight = weight;        .......※
+     }
+
+   コンストラクタの中身（続き）　⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎⬇︎
+
+     Person(String firstName, String middleName, .....double weight) {
+       this(firstName,lastName,......weight); ......※他のコンストラクタを呼び出す
+       this.middleName = middleName;
+     }
+
+●　fullNameメソッドの書き換え
+　　　　　middleNameメソッドを追加することができたが、下図のままではまだ表示がされていない。
+　　　　　middleNameを持っているば人もいれば、持っていない人もいるので
+　　　　　むやみにmiddleNameフィールドの値を連結することはできない、どうすれば良いか？
+
+  [Main.java]
+   class Main {
+     public static void main(String[])args) {
+       Person person = new Person("John", "Bob", "Smith"......);
+       System.out.println(person.fullName());
+     }
+   }
+　　　　　コンソール　▶︎ John Smith
+------------------------------------------------------------------
+  [Person.java]
+   class Person {
+      …
+     public String fullName() {
+       return this.firstName + "" + this.lastName:
+     }
+   }
+
+●　null
+　　　　　そもそも値がセットされていないmiddleNameフィールドには、何が入っているのだろうか？
+　　　　　実は　null　という値が入っており、nullは何も無いという意味する特別な値である。（文字列ではない）
+　　　　　nullはプログラミングで必須の知識なので必ず覚えておく。
+
+●　変数の初期値
+　　　　　Javaでは、変数の定義時に値を代入しなかった場合、決まったデフォルト値が変数に代入だれる。
+　　　　　フィールドも変数なので同様。下図のようにデータ型によって入る値が決まっている
+
+   String ...... null
+   int    ...... 0
+   double ...... 0.0
+   bpplean ..... false
+
+
+●　fullNameメソッドを書き換える
+　　　　　fullNameメソッドの中で、middleNameがnullkかどうかによって返す値を変えるようにする。
+　　　　　下図の様に、条件分岐を行えばmiddleNameの値がセットされているインスタンスは
+　　　　　middleNameを含めたフルネームを、そうでないインスタンスなら
+　　　　　midlleNameを含めないフルネームを返せる様になる。
+
+   [Person.java]
+    class Person {
+       …
+      public String fulName() {
+        if(this.midlleName == null) {
+          return this.firstName + "" + this.lastName;
+        } else {
+          return this.firstName + "" + this.midlleName + "" + this.lastName;
+        }
+
+●　カプセル化
+　　　　　「カプセル化」　とはオブジェクト指向の重要な機能の一つで、使い手に必要ないものを隠してしまうことを指す。
+
+●　カプセル化のイメージ
+　　　　　例えば、パソコンの回路はパソコンの内部に隠されており、ユーザーはキーボードなど
+　　　　　限られた部分しか操作することができない。
+　　　　　回路を隠す（カプセル化する）と回路に触れてパソコンを壊してしまう危機を回避できる。
+　　　　　プログラミングでもこのようなカプセル化の仕組みがある。
+
+●　クラスでのカプセル化
+　　　　　自分がクラスを作る際には他人が安心してそのクラスを使える様に、他人に使って欲しい機能は公開し、
+　　　　　クラスの外で使って欲しくない機能は隠します。
+　　　　　使える機能を制限することにより安全にクラスを利用することができる。
+
+●　フィールドとメソッドのアクセス制限
+　　　　　クラスの外からアクセスできる様にするには　「public」　を、
+　　　　　アクセスできない様にするには　「private]　を用いて定義する。
+　　　　　下図はprivateなフィードにMainクラスからアクセスできない様子を示している。
+
+   [Main.java]
+    class Main {
+      public static void main(String[] args) {
+        Person person = new Person("Suzuki", 24);
+        System.out.println(person.name);  ........"Suzuki"
+        System.out.println(person.age);   ........エラー発生
+      }
+    }
+　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+    
+    class Person {
+      public String name;
+      private int age;
+      Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+      }
+    }
+
+●　クラス外からのアクセス
+　　　　　フィールドのアクセス権をprivateにすると、フィールドにクラスの外からアクセスできなくなる。
+　　　　　一方、privvateでもクラス内からはアクセスすることは可能です。
+
+   [Main.java]
+    class Main {
+      public static void main(String[] args) {
+        Person person = new Person("Monkey", "D", "Lufy",.....);
+        System.out.println(person.middleName); ......クラス外からアクセスできない
+      }
+    }
+   ------------------------------------------------------------------
+   [Perosn.java]
+    class Person {
+          …
+      private String middleName;
+          …
+      public String fullName() {
+        if (this.middleName == null); {  ............クラス外からアクセスできる
+             …
+        }
+      }
+
+●　ゲッター
+　　　　　フィールドをprivateにした上で、クラス外から安全にフィールドの値を取得するために、　
+　　　　　フィールドの値を返すだけのメソッドを定義する。これを　「ゲッター」　と呼ぶ。
+　　　　ゲッターは　「getフィールド名」　のように命名するのが一般的。
+
+   [Main.java]
+    class Main {
+      public static void main(String[] args) {
+        Person person = new Person("Monkey", "D", "Luffy",.....);
+        System.out.println(person.getMiddleName());　......ゲッターを使えばアクセスできる
+      }
+　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Perosn.java]
+    class Person {
+          …
+      private String middleName;
+          …
+      public String getMddleName() { .........クラス外からアクセス可
+        return this.middleName;  .............フィールドの値を返す
+      }
+    }
+
+●　フィールド値の変更
+　　　　　フィールドのアクセス権をprivateにすると、当然フィールドの値をクラスの外から変更することもできなくなる。
+
+  [Main.java]
+   class Main {
+    public static void main(String[]args) {
+      Person person = new Person("Luffy", "Zoro", "Nami".....);
+      person.middleName = "D"; .......privateなのでアクセスできない
+　　　　　　　　　　　 //結果　：　D
+    }
+   } 
+
+●　セッター
+　　　　　そこで、フィールドの値を変更するメソッドを定義する。　
+　　　　　この様なフィールドの値を変更するメソッドを特に　「セッター」　と呼ぶ。
+　　　　　セッターは　「setフィールド名」　の様に命名するのが一般的。
+
+   [Person.java]
+    class Pesrson {
+       … 
+      private String middleName;
+       …
+      public void setMiddleName(String middleName) {
+        this.middleName = middleName; ............フィールドに値をセット
+      }
+    }
+
+●　カプセル化の定石
+　　　　　①　フィールド　...private
+　　　　　②　メソッド　　　....public
+　　　　　という２点を沿っておけばカプセル化の定石は問題ない。
+
+●　仕事を追加する
+　　　　　各インスタンスの仕事を保存する　「job」　というインスタンスフィールドを追加する。
+　　　　　フィールド定義、コンストラクタの変更、ゲッター、セッターの定義、メソッドの修正を一通りやっってみる。
+  
+　　　　　[例]
+　　　　　コンソール　▶︎　私の名前はMonkey Luffyです
+　　　　　　　　　　　　　　　　　　　　　　　　年齢は２０歳です
+　　　　　　　　　　　　　　　　　　　　　　　　BMIは２０です
+　　　　　　　　　　　　　　　　　　　　　　　　仕事は海賊です ........インタンスフィールドjobを追加する
+　　　　　　　　　　　　　　　　　　　　　　　　…
