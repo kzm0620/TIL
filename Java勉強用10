@@ -1,0 +1,239 @@
+●　継承を学ぶ
+　　　　　これまで作り上げてきたプログラムを、オブジェクト指向の機能を用いて改善してく。
+
+●　Car　と　Bicycle　の重複
+　　　　　CarクラスとBicycleクラスは、下図の様に重複がある。コードの重複は保守性を下げるため避ける。
+　　　　　両クラスはどちらも乗り物です。
+
+
+●　クラスの内容を引き継ぐ
+　　　　　オブジェクト指向では、あるクラスの内容を他のクラスが引き継ぐことができる。
+　　　　　先ほどの重複部分を、Vehicleクラス(乗り物)に定義し
+　　　　　そのクラスを二つに引き継いで重複をなくす方法を学ぶ。
+
+●　継承
+　　　　　既存のクラスのフィールドやメソッドを別のクラスに引き継ぐ機能を　「継承」　と呼ぶ。
+　　　　　さらに継承してできるクラスには独自のフィールドやメメソッドを追加してカスタマイズもできる。
+　　　　　継承されるクラスを　「スーパークラス」　、
+　　　　　継承してできるクラスを　「サブクラス」　と呼ぶ。
+
+●　継承の方法
+　　　　　継承を用いて新しくサブクラスを定義する時は、「extends]　を用いて下図のように
+　　　　　「class サブクラス名　extends スーパークラス名」　としてクラスを定義する。
+　　　　　extendsは　「拡張する」　という意味。　
+　　　　　継承は、スーパークラスをもとに機能を拡張したサブクラスを作るための機能である。
+
+   [スーパークラス]
+    class スーパークラス名 {
+       …
+　　　　　　　　}
+　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [サブクラス]
+    class サブクラス名　extends スーパークラス名 {  .........スーパークラスを継承
+    }
+
+●　スーパークラスのメソッドを呼び出す
+　　　　　Carクラス（サブクラス）はVehicleクラス（スーパークラス）の　フィールドとメソッドを引き継いでいる。
+　　　　　よって、Carクラス自体にはまだ何も定義されていないが、Carクラスのインスタンスに対して
+　　　　　Vehicleクラスのインスタンスメソッドを呼び出すことが可能。
+
+   [Vehicle.java]
+    class Vehicle {
+        …
+      public void setName(String name) {
+        …
+      public void setColor(String color) {
+        …
+      }
+    ーーーーーーーーーーーーーーーーーーーーーーーーーー
+    [Car.java]
+     class Car extends Vehicle { ......Vehicleクラスのインスタンスメソッドを継承
+     }
+　　　　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーー
+    [Main.java]
+     class Main { 
+       public static void main(String[]args) {
+          Car car = new Car();
+          car.setName("ベンツ");    ........スーパークラスの
+          car.setColor("シルバー"); ........インスタンスメソッドを呼び出す
+            …
+       }
+     }
+
+●　サブクラスのフィールドとメソッド
+　　　　　サブクラスには、スーパークラスにない独自のフィールドやメソッドを追加しカスタマイズできる。
+　　　　　インスタンスフィールドfuelはCarクラスに独自のフィールドです。
+　　　　　fuelというフィールドと、そのゲッターをCarクラスに定義してあげる。
+
+  [Car.java]
+   class Car extends Vehicle {
+     private int fuel = 50;  ......独自のフィールド
+     public int getFuel() {  ......独自のメソッド
+       return this.fuel;     ......独自のメソッド
+     }
+   }
+
+●　メソッド呼び出しの注意点
+　　　　　　サブクラスのインスタンスは、自身のクラスに定義したメソッドだけではなく、
+　　　　　　スーパークラスのメソッドも呼び出すことができる。
+　　　　　　一方スーパークラスのインスタンスはサブクラスのメソッドを呼び出すことはできない。
+　　　　　　クラスの継承は一方的なためサブクラスのメソッどドを見つけることはできずエラーが発生する。
+
+  [Car.java]
+   class Car extends Vehicle {
+     private int fuel = 50;  ......独自のフィールド
+     public int getFuel() {  ......独自のメソッド
+       return this.fuel;     ......独自のメソッド
+     }
+   }
+　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [Main.java]
+   class Main {
+     public static void main(String[]args) {
+       Car car = new Car();
+       System.out.println(car.getFuel());    .........◯
+
+       Vehicle vehicle = new Vehicle();
+       System.out.prontln(vehicle.getFuel); 　　.........×
+     }　　　　　　　　　　　　　　　　　　　　　　　　　
+   }
+　　　　　　　　（スーパークラスのインスタンスに対して、サブクラスのメソッドは呼び出せない）
+
+●　メソッド呼び出しの仕組み
+　　　　　サブクラスのインスタンスに対して、メソッドを呼ぶ際には下図の様にメソッドが呼ばれる。
+　　　　　呼び出したメソッドが、サブクラスに定義されていればサブクラスから、
+　　　　　定義されていなければスーパークラスから呼び出される。
+
+   [継承の仕組み]
+    Car car = new Car();
+     car.getFuel(); .......CarクラスのgetFuelメソッド
+     car.prontData(); .....※VehicleクラスのVprintDataメソッド
+　　　　　　　　　　（※CarクラスにprintDataメソッドがないので、Vehicleクラスから検索）
+
+　　　　　
+●　メソッドのカスタマイズ
+　　　　　スーパークラスから継承しているメソッドの処理を、
+　　　　　特定のサブクラスでカスタマイズしたいという場合を考えてみる。
+　　　　　例えば下図のように、Carクラスのインスタンスに対してprintDataメソッドを
+　　　　　呼び出す時はガソリン量も表示したいとする。
+
+   [Main.java]
+    class Main {
+      public static void main(String[]args) {
+        Car car = new Car();
+           …
+        car.printData();
+      }
+     }
+   --ーーーーーーーーーーーーーーーー---------------
+　　　　　　　コンソール　【車の情報】
+　　　　　　　　　　　名前　：　フェラーリ
+　　　　　　　　　　　色　：　赤　
+　　　　　　　　　　　ガソリン量　：　１００L ...........Carクラスのインスタンスはガソリン量も表示したい
+
+●　オーバーライド
+　　　　　スーパークラスから継承したメソッドと同名のメソッドをサブクラスに定義することで
+　　　　　スーパークラスのメソッドの上書きをすることができる。これを　「オーバーライド」　と呼ぶ。
+　　　　　すなわちCarクラスにもpritDataメソッドを定義すると、
+　　　　　VehicleクラスのprintDataメソッドが上書きされる。
+
+   [Vehicle.java]
+    class Vehicle {
+        …
+      public void printData() {
+        System.out.println("名前" + this.name);
+        System.out.println("色" + this.color);
+        System.out.println("走行距離" + this.distance + "km");
+      }
+   ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [Car.java]
+   class Car extends Vehicle {
+        …
+     public voud printData() {
+       System.out.println("名前" + this.getName());             ...※
+       System.out.println("色" + this.getColor());              ...※
+       System.out.println("走行距離" + this.getDistance + "km"); ...※
+       System.out.println("ガソリン量" + this.fuel + "L");　
+     }　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　※内容を追加してカスタマイズ
+　　　　　　　　　　　　（スーパークラスの同名メソッドをオーバーライド（上書き）
+   }
+
+●　オーバーライドの仕組み
+　　　　　　サブクラスのインスタンスに対してメソッドを呼び出すと、まずサブクラスの中でそのメソッドを探し、
+　　　　　　持っていればそのメソッドを呼び出す。
+　　　　　　つまりスーパークラスと同名のメソッドがサブクラスにあれば、それが実行されるので
+　　　　　　結果的にメソッドの内容が上書きされた様になる。
+　　　　　　（ここではCarクラスに定義したprintDataメソッドが呼ばれる）
+
+   Car car = new Car();　　　　　　　　　　　　　　　　　　　　　　　Carクラス　　　　　　　　　　　　　　　　　　　Vehicleクラス
+     car.printDate(); 　　　ーーーーー▶︎　　printDataメソッド　　　　　　printDataメソッド
+　　　　　（printDataメソッドの呼び出し）
+
+     car.getName();    　　　　　　　　　　　　　　　ーーーーーーーーーーー▶︎　　　　getNameメソッド
+　　　　　（getaNameメソッドの呼び出し）
+
+
+●　フィールドへのアクセス制限
+　　　　　　CarクラスのprintDataメソッドではfuelの出力を加えるだけだが、
+　　　　　　fuel以外のname,color,distanceフィールドの出力にも注意が必要。
+　　　　　　これらは、Vehicleクラスにprivateなフィールドとして定義されており
+　　　　　　外部のクラスであるCarクラスから直接アクセスすることはできない。（カプセル化）
+　　　　　　fuel以外のフィールドはゲッターを用いて取得するようにする。
+
+   class Vehicle {　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　CarクラスのprintaDataメソッドの中身
+     private String name; ◀︎  System.out.println("名前" + this.name);
+                          ❌ (privateなのでアクセスできない)
+
+     public String getName() { ◀︎ System.out.println("名前" + this.getName);
+      return this.name;        ⭕️　　（publicなのでアクセスできる）
+
+
+●　メソッド内の重複
+　　　　　　先ほどのprintDataメソッドのオーバーライドには重複があります。
+　　　　　　CarクラスのprintDataメソッっどは、ガソリン量を表示している箇所以外は
+　　　　　　処理が重複している。このコードの重複は無くしてあげた方が良い。
+
+   [Vehicle.java]
+    …
+    System.out.println("名前" + this.getName());             
+    System.out.println("色" + this.getColor());              
+    System.out.println("走行距離" + this.getDistance + "km"); 
+　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Car.java]
+    …
+    System.out.println("名前" + this.getName());             
+    System.out.println("色" + this.getColor());              
+    System.out.println("走行距離" + this.getDistance + "km"); 
+
+    ※どちらも重複のあるオーバーライド
+
+
+●　スーパークラスのメソッドを呼ぶ
+　　　　　　「super.メソッド名（）」　とすると、サブクラスのインんスタンスメソッドから、
+　　　　　　スーパークラスのインスタンスメソッドを呼び出すことができる。
+　　　　　　これを使えば、Carクラスのメソッドでガソリン量を表示する箇所以外の処理はVehicleクラスの
+　　　　　　printDatamメソッドを呼び出すことで代用することができる。
+　　　　　
+   [Vehicle.java]
+    …
+     System.out.println("名前" + this.getName());             
+     System.out.println("色" + this.getColor());              
+     System.out.println("走行距離" + this.getDistance + "km"); 
+    }
+　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  
+　　　　　　　[Car.java]
+    class Car extends Vehicle {
+      …
+      public void printData() {
+        super.printData(); ..........⬆️スーパークラスのインスタンスメソッドを呼び出す
+        System.out.println("ガソリン量　：　"　+ this.fuel + "L")；
+　　　　　　　　　　　　}
+
+●　サブクラスのコンストラクタ
+　　　　　コンストラクタでnameとcolorの値をセットできる様にしましょう。
+　　　　　サブクラスでコンストラクタを定義するときには１つの決まりがある。
+　　　　　それは　「コンストラクタの先頭でスーパークラスのコンストラクタを呼び出さなければならない」
+　　　　　ということ。よってサブクラスのインスタンスを生成した時の流れが下図である。
+
+
