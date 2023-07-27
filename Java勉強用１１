@@ -1,0 +1,194 @@
+●　詳細未定のメソッド
+　　　　　車や自転車に限らず、乗り物はすべて「走行する」機能を持つ。
+　　　　　よってプログラム上でも、Vehicleクラスを継承する全てのメソッドはrunメソッドを持っているべき。
+　　　　　本来であればrunメソッドはVehicleクラスに定義し継承できれば楽なのだが
+　　　　　乗り物ごとに走行距離が違うため、Vehicleクラスでは処理内容を定めることができない。
+
+  [Vehicl.java]
+   class Vehicle {
+     …
+     public void run(int distance) {
+      //乗り物ごとに処理が異なるため、内容を定められない
+     }
+
+●　抽象メソッド
+　　　　　処理が未定のメソッドを定義する方法がある。数のように　abstract　をつけることで、
+　　　　　抽象メソッドというメソッドを定義できる。　抽象メソッドには中身の処理は書かない。
+　　　　　abstractとは「抽象的な」という意味。　具体的な処理が決まっていない未完成のメソッドで
+　　　　　あるため、「抽象メソッドと呼ばれる。
+
+  [Vehicle.java]
+  class Vehicle {
+   …
+   public abstract void run(int distance); ........処理内容は書かない
+   }
+
+●　メリットとポイント
+　　　　　　抽象メソッドは、サブクラスがそのメソッドをオーバーライド（上書き）していなければエラーになる。
+　　　　　　なのでサブクラスがそのメソッドをオーバーライドし、処理内容を定義することを強制できる。
+　　　　　　サブクラスに、あるメソッドを必ず持たせたいという場合は、
+　　　　　　スーパークラスに抽象メソッドとして定義しておくことが大事。
+
+   [Vehicle.java]
+    class Vehicle {
+       …
+      public avstract void run(int distance);
+      (サブクラスでのオーバーライドを強制)
+    }
+　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Car.java]
+    class Car extends Vehicle {
+      …
+     public void run(int distance) {　......⭕️オーバーライドして処理の内容を確定
+       this.distance += distance; 
+     }
+　　　　　　　　　　　　…
+　　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+    [Bicycle]
+     class  Bicycle extends Vehicle {
+       //runメソッドの定義なし     ..........❌エラーになる
+     }
+
+●　抽象クラス
+　　　　　抽象メソッドを１つでも持つクラスは、「抽象クラス」と呼ばれ、クラス名の前にabstractをつける。
+　　　　　抽象クラスはインスタンスを生成できない。
+　　　　　抽象メソッドという未完成のメソッドを持つクラスは、それもまた未完成である。
+　　　　　そのような未完成のクラスからはインスタンスは生成できない仕組みになっている。
+
+  [Vehicle.java]
+   abstract class Vehicle { ......抽象メソッドを持つクラスは、必ず「抽象クラス」になる
+　　　　　　　　…
+     public abstract void run(int distance);　 .........抽象メソッド
+   }
+
+●　乗り物の所有者を定義する
+　　　　　少し発展的な内容を学んでいく。
+　　　　　　以前作り上げたPeesonクラスと組み合わせて、乗り物をある人物が所有している状況を
+　　　　　　プログラムで表現してみる。
+
+●　クラス型のフールド
+　　　　インスタンスフィールドにクラス型の変数を定義することで、フィールドにインスタンスを持つことができる。
+　　　　下図のようにPerson型のownerというインスタンスフィールドを持つようにしてみる。
+
+  [Person.java]
+   class Person {
+     public static int count = 0;
+     public String firstName;
+     public String midddleName;
+     public String lastName;
+     …
+   }
+　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [Vehicle.java]
+   abstrct class Vehicle {
+     public String name;
+     public String color;
+     private int distance = 0;
+     private Person owner; ...........Person型のownerフィールドを追加
+     …      (クラス名）
+
+●　ゲッターとセッター
+　　　　　ゲッターとセッターを定義しておく。
+　　　　　やり方はこれまでと同じだが、ゲッターの戻り値と、
+　　　　　セッターの仮引数の型がクラス型になることに注意する。
+
+  [Vehicle.java]
+   abstrsct class Vehicle {
+   　　…
+   　　private Perosn owner;   .........戻り値がPersona型
+   　　…
+   　　public Person getOwner() {
+    　　 return this.owner.
+  　　 …
+   　　public void setOwner(Person person) {  ........Person型の引数を受け取る
+    　　 this.owner = person;
+   　　}
+   　　…
+　　　　　}
+
+●　インスタンスの戻り値
+　　　　　Carクラスのインスタンスや、Bicycleクラスのインスタンスに対して
+　　　　　getOwnerメソッドを呼び出すと、その戻り値はownerフィールドの値、
+　　　　　すなわちPersonクラスのインスタンスとなっている。
+　　　　　よって下図のように、getOwnerメソッドのあとにそのまま続けて
+　　　　　PersonクラスのインスタンスメソッドprintDataを呼び出すことが可能である。
+
+  [Main.java]
+   class Main {
+     public static void main(String[]args) {
+       Person person = new Person("Luffy", "Zoro", "Nami".......);
+       Car car = new Car("フェラーリ", "赤");
+       car.setOwner(person);
+       car.getOwner().printData(); ........※PersonクラスのprintDataメソッド
+     }
+    }
+  ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Vehicle.java]
+    abstract class Vegicle {
+      …
+      private Peraon owner;
+      …
+      public Person getOwner(() {
+        return this.owner;　　　　　　..............※⬆️Perosnクラスのインスタンス
+      }
+    }
+
+●　buyメソッドを定義する
+　　　　　Personクラスのインスタンスが乗り物を購入できる様に、buyメソッドを定義する。
+　　　　　購入する乗り物はCarクラスのインスタンスかBicycleクラスのインスタンスです。
+　　　　　buyメソッドの引数はどちらの型のインスタンスも受け取る可能性があるのでオーバーロードする必要がある。
+
+  [Person.java]
+   class Person {
+     …
+     publicvoid buy(Car car) {     .........引数の型が異なる同名のメソッドを定義
+      //処理
+     }
+     public void buy(Bicycle bicycle) {　 ....引数の型が異なる同名のメソッドを定義
+      //処理
+     }
+    }
+
+●　 buyメソッドの処理
+　　　　　buyメソッドの中で、引数に受け取ったインスタンスの中のセッターを用いて所有者を変更してあげる。
+
+  [person.java]
+   class Person {
+     …
+     public void buy(Car car) {
+       car.setOwner(this);
+                    ※①
+     }
+     public void buy(Bicycle bicycle) {
+       biicycle.setOwner(this);
+     }                   ----buyメソッドを呼び出している、Personクラスのインスタンスを指す
+   }
+　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [Vehicle.java]
+   abstract class Vehicle {
+     …
+     public void set.Owner(Person person) {
+                              ※②
+       this.owner = person;
+     }　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　※③
+     …
+   }　　　　　　　　　　　　　　　　　　　　　　　　　　　※　①　▶︎　②　▶︎　③ の流れ
+
+●　buyメソッドの重複
+　　　　　先ほど作ったbuyメソッドを見てみる。これらはほとんど同じコードです。
+　　　　　しかもこの方法は、Vehicleクラスのサブクラスが今後増えた場合、
+　　　　　毎回引数の型が違う同名のメソッドを定義しなければならない。
+
+  [Person.java]
+   class Person {
+     …
+     public void buy(Bicycle bicycle) {
+       bicycle.set.Owner(this);
+     }
+     public void buy(Truck truck) { ....Truckクラスを追加したら、新しく
+       bicycle.set.Owner(this);　　　　　　　　　　　　　　　　　　buyメソッドを定義しなければならない
+     }
+
+●　buyメソッドの改良
+　　　　　
+     
