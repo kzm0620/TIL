@@ -236,4 +236,117 @@
 　　　　　それは　「コンストラクタの先頭でスーパークラスのコンストラクタを呼び出さなければならない」
 　　　　　ということ。よってサブクラスのインスタンスを生成した時の流れが下図である。
 
+   [Vehicle.java]
+    class Vehicle {
+      public Stirng name;
+      private String color;                  ....※
+          …                                  .....※スーパークラスの呼び出し
+      Vehicle(String name, String color) {   .....※
+      //処理
+      }
+    }
+　　　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Car.java]
+    class Car extends Vehicle {
+       …
+      Car(String name, String color) {
+      ⬆️※スーパークラスの呼び出し⬆️
+      //処理
+      }
+     }
+
+●　フィールドに値をセットする
+　　　　　スーパークラスに定義されたフォールドに、コンストラクタで値をセットできるようにする。
+　　　　　まずは下図の様にスーパークラスとサブクラスの双方でコンストラクタを定義しなければならない。
+　　　　　そして、サブクラスのコンストラクタ内でsuoper()に引数を渡し、
+　　　　　スーパークラスのコンストラクタを呼び出す。
+
+  [Vehicle.java]
+    class Vehicle {
+      public Stirng name;
+      private String color;
+         …            ③
+      Vehicle(String name, String color) {
+               　　　　　　　　　　　　⬇️④
+        this.name = name;
+        this.color = color;
+      
+　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+   [Car.java]
+    class Car extends Vehicle {
+      Car(Stirng name, String color) {
+          ⬇️---------
+        super(name,color); ......スーパークラスのコンストラクタにnameを渡す
+      }
+
+●　runメソッド
+　　　　　runメソッドはそれぞれのクラスで処理内容が異なるので、Vehicleクラスに定義して継承するのではなく
+　　　　　それぞれのサブクラスに独自のメソッドとして追加してあげる。
+
+   [Car.java]
+    class Car extends Vehicle {
+    …
+    public void run(int dinstance) {
+      System.out.println(distance + "km走ります");
+      if(distance > fuel) {
+        System.out.peintln("ガソリンが足りません");
+      } else {
+        this.distence += distance;
+        this.fiel -= distance;
+      }
+　　　　　　　　　　　　　　　　　　　　⬆️
+　　　　　　　継承せずに、独自のメソッドとしてそれそれ追加する
+　　　　　　　　　　　　　　　　　　　　⬇️
+　   [Bicucle.java]
+    class BIcycle extends Vehicle {
+    …
+      public void run(int distance) {
+        System.out.println(distance + "km走ります");
+        this.distanse += distance;
+      }
+
+●　フィールドのアクセス制限　（復習）
+　　　　　runメソッドは元のコードをそのまま追加するとエラーが発生する。
+　　　　　なぜならrunメソッドが、Vehicleクラスのdistanceフィールどにアクセスしようとするため。
+
+   [Vehicle.java]
+   class Vehicle {
+     …
+     private int distance= 0; .....privateなのでクラス外からはアクセスできない
+   　　　　…
+　　　  }
+
+●　protected
+　　　　　　ゲッター、セッターとは違う方法で解決してみる。
+　　　　　　privateの代わりに、protectedを用いると、クラス内とサブクラスからの
+　　　　　　アクセスを許すフィールドを作ることができる。
+　　　　　　よって、この場合はdistanceフィールドをprotectedにすれば無事にメソッドが動作する。　
+
+  [Vehicle.java]
+   class Vehicle {
+      …
+     protected int distance = 0;  ......クラス内とサブクラスからのみアクセスできる
+      …
+   }
+　　　　ーーーーーーーーーーーーーーーーーーーーーー
+  [Car.java]
+   class Car extends Vehicle {
+    …
+     public void run(int distance) {
+      …
+　　　　　　　　　　this.distance += distance; .............⬆️
+     }
+   }
+
+
+
+●　アクセス権のまとめ
+　　　　　・public ....... どこからでもアクセス可能
+　　　　　・protected .... そのクラスと子クラス内からのみアクセス可能
+　　　　　・private ...... そのクラス内からのみアクセス可能
+
+   [アクセス権]   [public]    [protcted]    [private]
+   　クラス内　　　　　　　　　　　　　　　　　　　⭕️           ⭕️           　　⭕️
+　　　　　　　サブクラス内　　　　　　　　　　　　　⭕️        　　　　　　⭕️        　　　　　　　　❌
+クラス、サブクラスの外　　　　　　⭕️　　　　　　　　　　　　　　　　　　　　　　❌　　　　　　　　　　　　　　　　　　　　　　　　❌
 
