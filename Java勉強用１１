@@ -190,5 +190,40 @@
      }
 
 ●　buyメソッドの改良
-　　　　　
-     
+　　　　　この問題を解決する方法がある。
+　　　　　下図のように引数としてVehicle型のインスタンスを受け取るようにすることで、
+　　　　　Carクラスのインスタンスも、Bicycleクラスのインスタンスも受け取ることがせきる様になる。
+
+  [Person.java]
+   class Person {
+     …
+     public void buy(Vehicle vehicle) { ......※Vehicle型の引数を受け取るようにする
+       vehicle.setOwner(this);
+     }
+    }
+　　　　　ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  [Main.java]
+   class Main {
+     public static void main(sstriung[]args) {
+       Person person1 = new Person("Luffy", "Zoro",...);
+       Carcar = ner Car("フェラーリ", "赤");
+       person1.buy(car); .......................※⬆️
+
+       Person person2 = new Person("Nami", "Sanji"......);
+       Bicycle bicycle = new Bicycle("メリー号", "白");
+       person2.buy(bicycle); ...................※⬆️
+     }
+    }
+
+●　スーパークラスのクラス型に代入する
+　　　　　buyメソッドの引数のクラス型をVehicle型に代入できる理由の説明。
+　　　　　Carクラスは、Vehicleクラスを継承しているので、Carクラスのインスタンスは
+　　　　　Car型である前にVehicleクラスでもある。
+　　　　　この関係にあるとき、サブクラスのインスタンスを、スーパークラスのクラス定義に代入することが
+　　　　　可能になる。（このような特性を　「多態性」　という）
+
+  [Main.java]
+   Vehicle vehicle = new Car("フェラーリ", "赤");
+                     (スーパークラスの型の変数には代入できる)
+   Vehicle vehicle = new Bicycle("ビアンキ", "緑");
+                     (スーパークラスの型の変数には代入できる)
