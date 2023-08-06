@@ -36,4 +36,26 @@
 
 　　　　　　ソースコードは完全修飾クラス名でクラス指定しなければならない
 
+４、プロパイルを実行したときの結果として、正しいものを選ぶ  
+   public class Sample {
+     protected int num = 10;
+   }
+ -----------------------------
+   package ex4;
 
+   public class SampleImpl extends Sample {
+     piblic class static void main(String[]args) {
+       System.out.prontln(num);
+     }
+   }
+
+   A, ０が表示される
+   B,　１０が表示される
+   C, コンパイルエラーが発生する
+   D,　実行時に例外がスローされる
+　　　　
+   正解… C,コンパイルエラーが発生する
+　　　　　　パッケージとクラスのアクセス制限に関する問題。
+　　　　　無名パッケージに属するクラスは、同じ無名パッケージに属するクラスから
+　　　　　しかアクセスできない。
+　　　　　
