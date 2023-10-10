@@ -1,6 +1,6 @@
 ●APIとは
 Application Program InterfaceとはJAVAが提供してくれている便利なソースコード群のこと。
-rintlnメソッドもこのAPIで定義されているものになる。
+printlnメソッドもこのAPIで定義されているものになる。
 JAVAの開発環境には必ず必要である。
 
 ・APIはパッケージと呼ばれるフォルダのようなもので管理されている。
