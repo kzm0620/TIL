@@ -1,0 +1,133 @@
+【jQuery】
+・Java Scriptライブラリのひとつ
+・MIT License(ライブラリの著作権表示を消さなければ、商用、非商用を問わず自由に使える)
+・プログラマーでなくても使いやすい
+
+
+【jQueryの基本形】
+＄{function()} 　
+
+$(セレクタ).メソッド():
+$(セレクタ).メソッド(引数):
+$(セレクタ).メソッド(引数,引数):
+$(セレクタ).メソッド(関数):
+
+セレクタ　主語のような部分、CSSのルールはほぼそのまま使える
+メソッド　述語のような部分　JQuery側で定義されている
+値　　　　最後の{}の部分、メソッドによって使い方が変わる
+
+例：p要素がゆっくりフェードアウトする
+　　$("p").fadeOut("slow");
+
+
+$(function() {
+  //HTML
+  $("#lesson1 span").html("雪");
+  //alert($("#lesson1 span").html());
+
+  //CSS
+  $("#lesson2"),css("color","red");
+
+  //show/hide　(表示、非表示)
+  $("#lesson3").hide();  ➡()の中身は入れなくてよい
+
+  //attr ⓵  (アトリビュート 属性を取得する)
+  $("#imgInfo").html($("#lesson4 img").attr("src"));
+
+  //attr ⓶ (アトリビュート　属性を変更する)
+  $("#lesson5 img").attr("src", "img/number2.png");
+  
+  //addClass (クラスを追加する) ⇔ removeClass で元に戻す
+  $("#lesson6").addClass("red");
+
+  //click (クリック時のイベントを設定)
+  $("#lesson7 a").click(function(){
+    $(this).css("color", "blue");　➡　親子の関係のセレクタであればthisでよい
+    return false;  ➡　aタグの動作をあえて封じ込めることで変化が生まれる
+  });
+  
+  //fadeIn / fadeOut (フェードイン、フェードアウト)　クリックしたら消せる
+  $("#lesson8 a").click(function(){
+    $(this).fadeOut(""slow);
+    return false;
+  });
+
+  function()➡"slow"で少しゆっくり消える、"fast"で少し早く消える
+  　　　　　　　好きな数字を"mm秒"で入力すると任意の速度に変更できる。
+
+
+●Viewer 
+　・サムネールを変更する　   ➡　click
+　・選択された画像を表示する　➡ attr
+
+  $(function(){
+    //サムネイルをクリック
+    $("a").click(function(){
+      $("figure img").attr("src", $(this).attr("href"));
+      return false;
+    });
+  });
+
+
+●Tab
+  $(function(){
+  //#tab1以外を非表示にする
+  $("#contents div:not(#tab1)").hide();
+
+  //タブをクリック
+  $("a").click(function(){
+    //一度すべてのコンテンツを非表示にする
+    $("#contents div").hide();
+
+    //選択されたコンテンツを再表示する
+    $($(this).attr("href")).show();  
+
+    //現在のcurrentクラスを削除
+    $(".current").removeClass("current");
+
+    //選択されたタブにcurrentクラスを追加
+    $(this).addClass("current");  
+
+    return false;
+  });
+});
+
+
+●Modal
+$(function(){
+  //背景と写真を非表示に
+  $("#bg, #photo").hide();
+
+  //サムネイルをクリック
+  $("a").click(function(){
+    $("#photo, img").attr("src", $(this).attr("href"));
+
+     //背景と写真をフェードイン
+    $("#bg , #photo").fadeIn();
+
+    return false;
+  });
+
+  //背景をクリック
+  $("#bg").click(function(){
+    //背景と写真をフェードアウト
+    $("#bg, #photo").fadeOut();
+  });
+});
+
+
+●ResizeHolder
+
+$(function(){
+  //ブラウザをスクロール
+  $(window).scroll(function(){
+    //スクロール量が300pxを超えているか
+    if($(window).scrollTop() > 300){
+      $("header").addClass("small");
+    }else{
+      $("header").removeClass("small");
+    }
+  });
+});
+
+
