@@ -1,0 +1,341 @@
+【バージョン管理システムとは】
+●ファイルの作成日時、変更日時、変更点などの履歴を管理すすもの
+　・誰が、いつ、どこで、どんな変更をしたか確認
+　・以前のバージョンへ復元
+　・ソースコードだけでなくドキュメントや設定ファイルなども管理
+●リポジトリ(データベース)を持ち、ファイルを管理
+●利用の流れ
+　・管理するファイルをリポジトリに登録
+　・ファイルをリポジトリからローカル環境に取得(クローン)
+　・ローカル環境でファイルを修正
+　・リポジトリには反映(コミット、プッシュ)
+
+
+【Gitの用語】
+●リポジトリ➡ファイルの変更履歴を保存する場所を指す。
+●ワークツリー➡ローカル環境で作業をしているフォルダ(領域)のことを指す
+●ステージングエリア➡ワークツリーからリポジトリにコミットするときの中継ポイントで
+　ワークツリーとリポジトリの間に共存する一時領域。
+　ステージングに登録されていないファイルはコミットできない
+●ブランチ➡ファイルの変更履歴を分岐して管理する機能。
+　分岐したブランチじゃマージ機能によって１つのブランチにまとまることも可能。
+　最初にコミットしたときに作成されるブランチを「masterブランチ」、
+　特定の作業で作成したブランチを「トピックブランチ」と呼ぶこともある。
+
+●クローン　➡リモートリポジトリをローカル環境に複製する
+●コミット　➡ワークツリーの変更をローカルリポジトリに反映する
+●プッシュ　➡ローカルリポジトリの変更をリモートリポジトリに反映する
+●チェックアウト　➡リポジトリから指定されたファイルを取り出し、　
+　　　　　　　　　ワークツリーに配置する。”ブランチ移動”などに使う
+●フェッチ　➡リモートリポジトリの最新の履歴を取得する。
+　　　　　　　フェッチだけではローカルリポジトリに結合されない
+●マージ　➡複数のブランチを１つのブランチにまとめる
+●プル　➡リモートリポジトリの変更をローカルリポジトリに取り込むこと。
+　　　　　内部でフェッチとマージを連続して実行する。
+●リセット　➡ワークツリーやステージンの内部を変更する。
+●HEAD　➡作業をしているブランチの最新のコミットの参照先。
+
+
+【Gitの内部構造】
+●ワークツリー(実際に作業するディレクトリ)
+　↓追加
+●ステージングエリア(コミットするファイルを管理)
+　↓コミット
+●.gitディレクトリ(Gitの管理データベース)
+
+
+【演習環境の構築】
+●Linuxの場合
+　・パッケージ管理ツール(yum,apt)によるうインストール
+　・ソースコードを使ったインストール
+●Macの場合
+　・インストーラーを使ったインストール
+　・Homebrewを使ったインストール
+●Windowsの場合
+　・Git for Windows
+
+
+【⓵フォルダ作成】
+●リポジトリ用フォルダ作成
+　・リモートリポジトリ　➡remoteフォルダ
+　・ローカルリポジトリ　➡localフォルダ
+>mkdir c:\git_sample
+>cd c:\git_sample
+>mkdir remote
+
+●-bare(バレ)オプション　➡空のリモートリポジトリを作成する
+●-sharedオプション　➡複数のユーザー間で共有可能にする
+>git init --bare --shared
+>dir
+
+
+【⓶cloneコマンド】
+●クローンの作成
+>cd c:\git_sample\local
+>git clone c:\git_sample\remote.（ピリオドを付ける）
+>git branch
+>git log
+➡.gitファイルが作られていれば成功（ローカルリポジトリの本体）
+　この配下のファイルすべてがワークツリーとなる
+
+
+【⓷configコマンド】
+●リポジトリ設定
+>git config --local user.name "Sample"　
+>git config --local user.email "Sample@com.jp
+　（ユーザー名、メールの設定しないとコミットプッシュができない)
+>git config ---local color.ul "auto"
+　（重要なコードなどを色分けして分かりやすくしてくれる）
+>git config --local --list
+　（configの設定の一覧を表示してくれる）
+
+※スコープ
+・--local　➡リポジトリ単体ごとの設定
+・--global ➡コンピュータにサインインしているユーザー全体の設定
+・--System　➡コンピュータ全体の設定
+
+
+【⓸statusコマンド】
+●状態を確認する
+>c:\git_sample\local > git status
+ on branch master
+ No commits yet
+ nothing to commit {create/copy files and "git add" to track}
+ (まだファイルの修正や変更はしてないよという意味)
+
+●ファイルを作成して確認んする
+>echo Hello Git > index.html (index.htmlを作成する)
+>git status （実行する）
+ On branch master
+ No commits yet
+ Untracked failes:
+ (user "git add<file>..."to icclude in what willbe commited)
+    index.html(赤文字)
+ (まだコミットしてないのでこのファイルは何だ？の状態)
+
+
+【⓹addコマンド】
+●ステージングエリアに追加する
+>git add index.html
+>git status
+  On branch master
+  No commits yet
+  Changes to be commited:
+  (use "git rm --cached <file>..." to unstage)
+     new file: index.html(緑文字)
+　（ステージングエリアにindex.hymlが追加された）
+
+●同じファイルを変更して状態を確認してみる
+>echo How are you? >> index.html
+>git status
+  On branch master
+  No commits yet
+  Changes to be commited:
+  (use "git rm --cached <file>..." to unstage)
+     new file: index.html(緑文字)
+　➡ステージングエリアにindex.htmlが表示される
+
+  Chabges not staged for commit:
+  (use "git add<file>..." to update what will be commited)
+  (use "git restore<file>..." to discard changes in working directory)
+    modlled index.html(赤文字)
+　➡ワークツリーにindex.htmlが表示される
+
+※注意点　変更分はまだステージングエリアに追加されていない
+
+
+●変更分をステージングエリアに追加
+>git add index.htlml (もう一度addコマンドで追加する)
+>git status
+  On branch master
+  No commits yet
+  Changes to be commited:
+  (use "git rm --cacked <file>..." to unstage)
+     new file: index.html(緑文字)
+　（ステージングエリアにだけindex.htmlが表示される）
+
+※addコマンドはワイルドカードでファイルを指定可能
+>git add *.html
+
+
+【⓺commmitコマンド】
+●コミット
+>git commit -m "creare index.html"
+ [master(root-commit) 33683d1] create index.html
+ 1 file changed.2 insertions(+)
+ creste mode 100644 index html
+
+※ -aオプションでaddとcommitを同時に実行。新規ファイルには無効
+>git commit -a -m "update content"
+
+
+【⓻rmコマンド】
+●ファイルをGitの管理下から削除する(remove)
+>type nul > delete.html (例として空のファイルを作る)
+>git add delite.html
+>git commit -m "create delete.html"
+   ......
+>git rm delete.html
+   rm 'delete.html'
+
+●削除処理がステージングエリアに追加されている
+>git status
+ On branch master
+ Changes to be commited:
+  (use "git rm --steged <file>..." to unstage)
+     delete: delete.html(緑文字)
+>git commit -m "delete delete.html"
+ .......
+
+※手動でファイルを削除し、addコマンドでステージングエリアに追加
+　することでrmコマンドと同様の挙動
+
+
+【⓼logコマンド】
+●コミットのログを出力
+>git log
+ commit ........
+  delete delete.htmi
+ .......
+ログからは以下の情報が得られる
+・コミットしたユーザー、時間、コミットのメッセージ
+
+●--onelineオプションで各コミットを１行で出力
+>git log --oneline
+
+●--grepオプションでコミットメッセージを条件に絞り込み
+>git log --oneline --grep="create"
+
+●特定のファイルのみ取得
+>git log --oneline index.html
+
+
+【⓽resetコマンド】
+●コミットを取り消す
+>git log --oneline
+>git reset "HEAD^"　(^はHEADのひとつ前までの意味)
+>git log --oneline
+
+※git resertは215a2baのようにコミットIDでも指定可能
+
+●statusコマンドでdelete.htmlの状態を確認
+>git status
+※deletehtmlを削除した履歴はワークツリーには残っている
+
+●--hardオプションで削除処理自体を取り消す
+>git add delete.html
+>git commit -m "delete delete.html"
+>git reset --hard "HEAD"
+>git status
+※delete.htmlの削除処理はワークツリーにも存在しない
+
+
+【⓾reflogコマンド】
+●HEADの操作履歴を出力（取り消したものを表示してくれる）
+  reset --herdを取り消すには
+　⓵reflogコマンドでHEADの移動履歴を出力
+　⓶reflogコマンドでリセットした操作をリセットする
+>git reflog -n 3
+>git reset --heard 1e62fc0
+>git log --oneline
+
+
+【11 diffコマンド】（ディファレンス）
+●差分を比較するため、ファイルを修正
+>type index.html
+>echo I'm fine >> index.html
+>type index.html
+
+●差分を比較
+>git diff
+......
+※オプション無の場合はワークツリーとステージエリアの比較
+
+●差分を比較(--statオプション)
+>git diff --stat
+.....
+●コミット履歴の比較
+>git commit -a -m "modify index.html"
+>git diff "HEAD"
+.....
+
+
+【Git Fllow】
+●ブランチ作成の指針として広く採用
+●５つの主となるブランチ作成を推奨
+　・master　　リリースしたバージョンの状態を持っている
+　・feature　機能を追加していく作業はここ
+　　　　　　　feature/タスク名を付けるのが慣例
+　・deverop　単体テストなどある程度できたらここにマージする
+　・release　結合テストやリリース直前のテストはここ
+　・hotfix　　緊急的にすぐ直すときに使用したりする
+
+
+
+【ブランチ操作】
+
+●ブランチ一覧表示
+>git branch
+  master
+
+●ブランチ作成
+>git branch deverlop
+>git branch
+  develop
+  *master　(*は現在いるブランチを意味する)
+※-dオプションでブランチ削除
+
+●ブランチ移動
+>git checkout develop
+ Switched to branch 'develop'
+>git branch
+  *develop
+   master
+
+●developブランチでファイルを追加してコミット
+>echo list > list.html
+>git add list.html
+>git commit -m "add list to list.html"
+ .....
+>git log --oneilne -n 3
+ .....
+（現状はブランチによって位置が違うとといわれている状態）
+
+●masterブランチに移動してログを確認
+>git checkout master
+ .....
+>git log --oneline
+ ....
+※developブランチでのコミットが他のブランチには反映されてないことが分かる
+
+●mergeブランチでファイル確認
+>git branch
+ .....
+>echo merge >> index.html
+>git add. 
+>gitcommit -m "add merge to index.html"
+>git log --oneline -n 3
+（必ずマージされる先でチェックアウトすること）
+
+●devvelopブランチをmasterブランチにマージ
+>git merge develop
+ .....
+>git log --oneline --graph -n 5
+ .....
+（履歴をグラフのように表示してくれる）
+
+●rebaseコマンド
+　コミットを再適用
+　・ブランチを統合し、履歴を一本化
+　・コミット履歴を修正
+
+●developブランチでファイルを追加してコミット
+>git checkout develop
+
+●masterブランチに移動してログを確認
+
+●masterブランチでファイルを変更
+
+●developブランチをmasterブランチにリベース
+（リベースする先を指定する）
+
