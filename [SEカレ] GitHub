@@ -1,0 +1,166 @@
+【Git Hub】
+・Gitコマンド (CUI)
+・TortoiseGit  (GUI)
+
+●バージョン管理システムとは
+誰がいつどのような変更をしたか確認できる
+以前のバージョンンへ復元
+ソースコードーだけでなくドキュメントや設定ファイルなども管理
+
+⓵管理するファイルをリポジトリに登録
+⓶
+⓷
+⓸
+⓹
+
+●バージョン管理システム
+・集中型　➡　SVN　(中央リポジトリ)
+・分散型　➡　Git　(リモートリポジトリ)
+
+●分散型バージョン管理システム
+Linuxの生みの親であるリーナス・トーバルズ氏が作成
+➡現在は日本人の浜野純さんが管理している
+　
+●Gitのデータ管理は差分ではない
+➡全てのファイルの状態を格納
+　変更なしの場合、以前の同一ファイルのリンクを格納
+
+●内部構造
+・ワークツリー(作業ディレクトリ)　➡　実際に作業している場所
+　↓追加　
+・ステージングエリア　➡　
+　↓コミット
+・リポジトリ (.gitディレクトリ)　➡
+
+●ローカルリポジトリの作成
+既存のディレクトリを作成
+　・ワーキングディレクトリだけの状態
+　・git int  .gitディレクトリとステージングエリアが作成
+
+リモートリポジトリからコピー
+　・git clone [リポジトリ]のURL
+　・リモートリポジトリのローカル上のコピー
+　・ＳＶＮのチェック
+
+●ローカルリポジトリへの反映
+　・ステージングエリアにファイルが反映の対象
+　・git add[ファイル名]
+　　➡GITで管理していないファイルを追加するときも
+　　　git add-A　で変更があったすべてのファイルを追加できる
+
+●リモートリポジトリでの反映　
+　・git push 
+
+●リモートリポジトリからの取得
+　・git pull
+   リモートリポジトリからデータを取得してマージ
+　　取得とマージの動作を一度に行う　
+　　取得➡fech
+   マージ➡marge
+
+
+●作業ディレクトリへの反映
+　・git dtatus
+　　どのファイルを編集したのか
+　　コミットされるべき変更
+
+●コミットログの表示
+　・git log
+　　誰がいつ変更したのか確認できる
+
+●ブランチの作成
+　git branch[ブランチ名]
+　GITのブランチはポインター
+
+●ブランチの一覧表示
+
+●Gitサーバー
+　・自前でGitサーバーを構築する
+　　サーバーにGITをインストールすることで構築できる
+　　コンテナ技術(Docker)を使用して構築することも可
+
+●Git ホスティングサービスを活用する
+　　GitHub,GitLabo,Bitbucketなど
+　　パブリック、プライベートのリポジトリが利用可
+
+
+【】
+⓵git config --global user.name "KAZUMA"
+⓶git config --global 
+⓷
+⓸
+⓹
+
+●リモートリポジトリの作成
+ cd remoto
+ gitt init --bare --shared
+ dir
+
+●git commit -m "〇〇〇"  この形が定番
+ git status
+ git branch
+
+ git temoto -v
+　➡origin ラベル　…リモートリポジトリの指定されている場所が分かる
+ git push origin master
+　➡[new brabch] 
+
+>cd :￥work￥bob
+>git clone c;￥work￥remoto￥.
+>git branch
+ ➡master
+〇〇〇(先ほど作ったもの)
+
+●トピックブランチ
+issues/#1　masterブランチから枝を生やして作業していくイメージ
+
+git checkout[ブランチ名]
+・-bオプションで新しいブランチを作成し、そのブランチに切り替える
+・-tオプションでリモートリポジトリにあるブランチをローカルに取得(tech)し、
+　そのブランチに切り替える
+⓵git branch ブランチ名
+⓶git checkout　ブランチ名
+
+>git checkout -b issue/#1
+>git branch  (issue/#1に移動したイメージ)
+>echo change1 > READEME.txt
+>type README.txt
+cahange1
+>git status
+  On branch isssue/#!.....
+>-a -m "change1"  
+>git log
+   (-a は全ての更新を対象とする　➡　新規作成は対象外)
+￥bob>git push origin issue/#1 
+   (リモートリポジトリに反映した) 
+
+￥bob>cd c:￥work￥alice
+>git branch
+  * master
+>git pull
+  *[nem branch]
+>git branCH  -a
+  *master 
+   remoto /orijin/issue/#1
+>git checkout -t origin/issues/#1
+  setup......
+
+>git checkout master
+>git pull  マスターを最新化
+>git log
+>git merge issues/#1(マージしたいブランチ)
+>git push origin master (リモートリポジトリへ公開する)
+
+●GITのブランチのマージ　
+・git merge [マージするブランチ名]
+
+●Non-Fast-Mege
+・git merge --ff
+・統合せずにmasterのポインタをbranchするという考え
+・
+
+●エクスプローラー上でのGit
+・Git GUI　使い勝手が悪い
+・Source Tree　一部が有料　Googleなどの連携が必要
+・Tortoise Git　無料で使用できる
+
