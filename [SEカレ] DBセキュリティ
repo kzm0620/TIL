@@ -1,0 +1,240 @@
+【データベースセキュリティ】
+●クライアント　　　　　　　（なりすまし）
+　↓
+●アプリケーションサーバー　（SQLインジェクション攻撃）
+　↓
+●データベースサーバー　　　（ソフトウェアの脆ぜい弱性）
+
+●その他　内部からの不正、ウイルス、ワーム
+
+➡ファイアオールなどでフィルタをかけて情報を守る（表面的なセキュリティのなので中身は別）
+　ネットワークの暗号化が大前提
+
+【セキュリティ用語】
+●認証　　正しいユーザーであることの認証 Aucentication
+●認可　　認証されたユーザーへの許可  Ausolized
+●アクセス制御
+　・強制アクセス制御(常時➡表全体)（MAC）
+　・任意アクセス制御(部分的➡行レベル)（DAC）
+
+
+【認証】
+
+【Postgres SQL】
+　psql -u progres -l
+・psqlコマンドラインツールで各コマンドを発行できる
+　つなぎに行くベータベ－スやユーザを変えないとOSユーザー名と同じとこに行こうとしエラーになる
+・一覧を見るだけなら-l(ハイフンエル)オプションででよいが、
+　どのユーザーでを付ける必要があるpostgers)
+
+【データベースの作成】
+⓵OSユーザーと同じ名前のロール作成（DBユーザー作成）
+>create -u postgres
+  -d -P -I -E sample (１行で入力)
+　新しいロールのパスワード(２回)
+
+・-d　新規データベースの作成を許可
+・-P　パスワード認証用のパスワードを設定
+・-I　ロール権限の継承なし
+・-E　パスワードを暗号化して格納
+⓶データベースの作成
+>create userdb
+⓷データベースの一覧表示
+>psql -l
+ ●-Uによるスーパーユーザー不要(すべての権限を持っている人)
+ ●userdbデータベースの所有者が一般ユーザー(例としてsampleになっている)
+⓸データベースの接続(exitで終了)
+>psql userdb
+
+
+【クライアント認証】(PostgresSQL例)
+●接続時の認証　$PGDATA/pg_hba.conf
+●pg_hba.confを使うとpostgresは認証の設定ができる
+
+# TYPE DATABASE   USER ADRESS    METHOD
+host    all   all    127.0.0.1/32    md5
+⓵host　⓶all　⓷all　⓸127.0.0.1/32　⓹md5 
+
+⓵接続形式
+　・local : ローカル接続
+　・host : ホスト接続　
+⓶接続時のユーザー
+　・all : すべてのユーザー
+　・ロール　:　指定ロールに属するメンバー
+⓷接続するデータベース
+　・all : すべてのデータベース
+　・sameuser : 接続ユーザーと同名のデータベース
+⓸IPアドレス範囲
+　・ホスト接続用範囲
+⓹認証方式
+　・trust : 許可
+　・reject :  拒否
+　・md5 : パスワード認証
+
+
+【パスワード設定】
+⓵C￥Progres  File￥PostgresSQL 12￥data
+ ➡pg_hba.confの編集
+   -userdbのみパスワードなしで接続
+>host  userdb   all ::1/128       trust ➡先頭行に追加する
+>host  all      all 127.0.0.1/32  md5
+●trust指定して先頭行に追加する
+●UNIX環境時は「pg_ctl relodr」にて実行しないと反映されない
+
+⓶データベースの接続（exitで終了）
+>psql userdb
+●パスワード不要になっている（例としてあえて）
+●UNIX
+UNIX環境時は「-h ホスト」
+
+
+【アクセスログ（監視役）】
+●WindowsやUNIXなどパッケージでインストールすれば最小限のログは設定済
+●データベースのログ（アクセス、アラート）
+　・不正アクセス（認証失敗時）発見
+　・障害の発見
+　・デバッグの目的
+●Postgres SQLのログ
+　・$PGDATA/pg_log/postgressql-<日付など>.log
+　・$PGDATA%￥log￥postgressql-<日付など>.log
+
+
+【認証失敗時のアクセスログ】
+⓵psqlにてpostgresデータベースに不正アクセス
+>psql postgres
+⓶ログを確認
+ -C:￥Program Files￥PostgresSQL￥12￥
+   data￥log￥postgressql-<今日の日助など>.log
+　・認証失敗がpg_hba.confのエントリにて行われたか
+　・どのデータベース、どのユーザーで問題が起きたか
+●今どきのスペックであれば機能に組み込まれている
+
+
+【認可】
+
+【ロールによる接続管理】
+⓵postgresデータベースの接続
+>psql -u postgres
+⓶user01ユーザーを追加（DBユーザー）
+>=# CREATE USER user01 PASWORD 'pass';
+ ・postgresSQLでは「ユーザー＝ロール」で表示される
+⓷userdbデータベースにuser01ユーザーで接続できることを確認
+>=# ￥c userdb user01 （￥Cでユーザー切り替えできる）
+　・￥du で現ユーザーの確認ができる
+　・￥Cでユーザーの切り替えできる
+⓸postgresデータベースに戻る
+>=# ￥c postgres posgres
+⓹userdbデータベースのすべての接続権限を取り消す(今回は例としてあえて)
+>=# REVOKE ALL DATABASE userdb FROM PUBLIC;
+ ・デフォルトでずべてのユーザーが接続できるようにPUBLICにCONNECTが付与されている
+⓺user01でuserdbデータベースに接続できないことを確認
+>=# ￥c userdb user01
+●誰に権限が付与されているかはDBの一覧から確認することができる
+>￥l データベース名(psqlと同じ情報)で特定のデータベースだけの情報を確認できる
+
+
+【グループとしてのロール】
+⓵postgresデータベースに接続
+>psql -u postgres
+⓶group01　ロールを追加
+>=# CREATE ROLE group01;　
+　・CREATE USERとCREATE ROLEでもユーザーは作れるが中身が違うので注意　
+　・CREATE USERであればログイン権限が与えられている
+⓷user02ユーザーをgrouo01ロールに追加
+>=# CREATE USER user02
+>=# PASSWORD 'pass' IN ROLE group01;　（ユーザーとロールを紐づける）
+　・group01ロール＝グループとして使用
+　・user02ユーザー＝ユーザーとしてし使用
+⓸group01ロールにCONNECTを付与
+=# GRANT CONNECT ON DATAbASE userdb
+⓹user02ユーザーにて接続
+=# TO groupdb user02
+●権限➡group01➡user02の流れ（group01に付与すると自動的にuser02にも権限が付与される）
+
+
+
+【権限の設定】
+⓵userdbデータベースに接続（端末１）
+>paql userdb
+⓶テスト用のテーブル作成
+=> CREATE TABLE fruit(id serial, name TEXT);
+　・serial型　SEQUENCEによる自動連番➡SEQUENCEが発行される
+⓷テスト用のデータ作成
+=> INSERT INTO fruit(name) VALUE('APPLE'),('ORANGE');
+⓸テスト用のデータの確認
+=> SELECT * FROM fruit;
+⓹user01ユーザーでuserdbに接続（端末２）
+>psql -u user01 userdb
+⓺参照できないこと確認（端末２）
+=> SELECT * FROM fruit;
+⓻SELECT権限付与（端末１）
+=> GRANT SELECT ON fruit TO user01;
+⓼参照できることを確認（端末２）
+=> SELECT * FROM fruit;
+⓽挿入できないことを確認（端末２）
+=> INSERT INTO fruit(name) VALUES('PEACH');
+⓾INSERT権限付与（端末１）
+=> GRANT INSERT ON fruit TO user01;
+11 挿入できないことを確認（端末２）
+=> INSERT INTO fruit(name) VALUES()'PEACH';
+12 SEQUENCEのUPDATE権限付与（端末１）(INSERTによって新しいSEQUENCE（番号）を発行しないといけない)
+=> GRANT UPDATE ON fruit_id_seq TO user01;
+13 挿入できることを確認（端末２）(INSERTは変更の権限)
+=> INSERT INTO fruit(name) VALUES('PEACH');
+
+●オブジェクトによって権限が必要なのか変わってくる
+●権限最小化原則があるので権限をallにするのはよくない
+
+
+
+【データの暗号化】
+⓵postgresユーザーにてuserdbに接続
+>psql -u postgres userdb
+⓶暗号化用fruit2テーブル作成
+=# CREATE TABLE fruit2(id serial,name,bytea);
+(bytea型：バイナリ型　暗号化することができる列)
+⓷fruitテーブルからデータをコピー
+=# INSERT INTO fruit2(name)
+-#  SELECT CONVERT_TO(name,'UTF-8') (文字列UTF-8をバイナリ型に変換)
+-#  FROM fruit;
+⓸fruit2テーブルの確認
+=# SELECT id, CONVERT_FROM(name,'UTF-8')
+-# FROM fruit2;
+⓹userdbデータベースのIDを確認
+=# SELECT datid, datname
+-#  FROM pg_stat_database;
+⓺fruit2テーブルのIDを確認
+=# SELECT relid, relname
+-#  FROM pg_stat_all_tables
+-# WHERE relname LIKE 'fruits';
+⓻非暗号化時のファイル内容を確認
+-C:￥Program Files￥PostgresSQL￥12￥data￥
+base￥<userdbのdata>￥<fruit2のrelid>ファイルをエディタで開く
+　・文字コードはそのまま確認できる
+⓼postgresユーザーにてuserdbに接続
+>psql -u postgres userdb
+⓽pgcrptoモジュールの有効化 (クリプト：暗号化モジュール)
+=# CREATE EXTENSION pgcrpto;
+⓾有効な拡張機能の確認
+=# SELECT * FROM pg_availabele_extensions
+-#  WHERE installed_version IS NOT NULL;
+11 暗号化データの格納
+=# UPDATE fruit2 SET name =
+-# ENCRYPT(name, 'pass'::bytea, 'AES'); (エンクリプトで暗号化する)
+　　　　　　平文　　　　　鍵　　　　暗号化のモード
+=# INSERT INTO fruit2(name)
+-#  VALUES(ENCRPT(CONVERT_TO('MELON' 'UTF8'),  'pass'::bytea, 'AES'));
+12 複合化して表示
+=# SELECT CONVERT_FROM(DECRYPT(name, 'pass'::bytea, 'AES'),'UTF8')
+-# AS name FROM fruit2;
+(DECRPT 複合化。もとに戻す)
+
+●文字サイズなど足りないところは埋め込んでから暗号化する(同じサイズ同じ文字数)
+●UPDATEは追記方式（古い値が残っている状態）
+
+13 暗号化のファイル内容を確認
+-C￥Program Files￥PostgresSQL￥12database￥<userdbの
+datid>￥<fruit2のrelid>ファイルをエディタで開く
+
+●非暗号化：暗号化前の不要なデータは「VACUUM VERBOSE fruit2;」にて削除可能
+
