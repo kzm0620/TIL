@@ -1,0 +1,419 @@
+【SQL】
+リレーショナルデータベースを扱うための言語。
+RDBNSの標準の言語として広く普及している。
+
+●DDL (Data DEfinition Language) ➡　　CREATE, ALTER, DROP
+●DCL (Data Control Language)　➡　　　GRANT,  REVOKE
+●DML (Data Manipulation Language)  ➡ SELECT, INSERT, UPDATE, DELETE
+●トランザクション制御   COMMIT, ROOLBACK
+
+【テーブル作成】
+●テーブル名、列名、列のデータ型を指定する
+●テーブル名、列名には命名規則がある
+　予約語（SQLのキーワード）使用できない
+●定義できる列の数には制限がある
+
+CREATE TABLE　テーブル名
+(列名１　データ型（有効桁数）
+,列名2　データ型（有効桁数）
+..........
+,列名3　データ型（有効桁数）
+)
+
+●DESC （デスクライブ）
+　テーブルを作成した後、そのような列で構成されているか確認できるコマンド
+
+【制約】
+●テーブルに正しいデータを維持するためのルール
+●単一または列のグループに対して定義可能
+・NOT NULL　　　　必須、NULLを認めない
+・UNIQUE　　　　　位置　重複値を認めない
+・PRIMARY KEY　　主キー　必須であり、一意でなければばらない
+・FOREIGN KEY　　外部キー/参照整合性　参照先に存在する値でなければならない
+・CHECK          チェック/検査　指定した条件を満たさなければならない
+
+
+【NOT NULL 制約】
+　・必須、NULLを認めない
+　・列制約構文のみで定義可能
+　　（一つの列で制約宣言ができる場合に使うもの）
+例 CREATE TABLE sample
+   (sample INT
+   ,sample  VARCHAR(20)
+   CONSTRAINS sample_name_nn NOT NULL　(CONSTRAINSで後から管理しやすいように名前をつけておく)
+   )
+
+【UNIQUE 制約】
+　・一意重複を許さない
+　・NULLは複数行あっても良い
+
+例：列制約構文
+   CREATE TABLE sample
+   (.....
+   ,email,VARCHARA(80)
+   CONSTRAINS sample_email_u UNIQUE
+   ,.....
+   ,depto INT　
+   )
+-----------------------------------------------
+例：表制約構文
+   CREATE TABLE sample
+   (....
+   ,email VARCHAR(80)
+   ,....
+   ,dept INT
+   ,CONSTRAINS sample_email_u UNIQUE(email)（どの列に対して制約をつけたいのか）
+   )
+   全ての列の定義が終わったからどの列にUNIQUE制約をつけるのかという意味
+
+
+●１つの列に複数の制約を定義することが可能
+
+例：列制約構文
+　 CREATE TABLE smp
+   (.....
+   ,email,VARCHAR(80)
+   ,CONSTRAINS sample_email_u UNIQUE
+   ,CONSTRAINS sample_email_nn NOT NULL
+   ,.....
+   ,)
+--------------------------------------------------
+●実は制約の名前は省略することが可能
+例：列制約構文
+   CREATE TABLE smp
+   ,.....
+   ,email,VARCHAR(80) UNIQUE NOT NULL
+   ,.....
+   )
+   (省略する場合はCONSTRAINは無くても大丈夫)
+
+
+【PRIMARY KEY制約】
+　●主キー（表内のレコードを識別する）
+　●１つのテーブルにに１つしか定義できない
+
+例：列制約構文
+   CREATE TABLE smp
+   (Smpno INT
+   CONSTRAINS smp_pk PRIMARY KEY
+   ,.....
+   ,smpno INT
+   )
+---------------------------------------------
+例：表制約構文
+   CREATE TABLE smp
+   (smpno INT
+   ,.....
+   ,smpno INT
+   ,CONSTRAINS smp_pk PRIMARY KEY(smpno)
+   )
+
+
+【FOREIGN KEY 制約】
+●外部キー/参照整合性（入力値は参照先に存在する値でなければならない
+
+例：列制約
+CREATE TABLE smp
+(.....
+,smpno INT CONSTRAINS smp_smpno_fk
+REFERENCE smp(smpno)
+)
+------------------------------------------------------
+例：表制約
+CREATE TABLE smp
+(.....
+,smpno INT
+,CONSTRAINS smp_smpno_fk FOREIGN KEY(smpno)
+REFERENCES(smpno)
+)
+
+
+【CHECk 制約】
+●チェック/検査（指定した条件を満たす）
+
+例：列制約
+CREATE TABLE smp
+(.....
+,sal INT CONSTRAINTS smp_sal_ck
+CHECK（sal >= 80000）
+,......
+,smpno INT
+)
+----------------------------------
+例：表制約
+CREATE TABLE smp
+(.....
+,sal INT
+,......
+,smpno INT
+,CONSTRAINts smp_sal_ck CHECK(sal >=80000)
+)
+
+
+【索引の作成】
+●索引/インデックス
+　・検索の速度向上（定義すると値が小さい順に格納され、場所も保管されている）
+　・重複チェック
+
+●UNIQUE、PRIMARY KEY制約を定義した列には、自動で索引が作成される。
+●索引は手動で作成もできる
+●列のグループを１つの索引として定義することもできる
+●構文
+CREATE INDEX 索引名
+ON 表名(列名[列名,....])
+
+
+【テーブル構造の変更】
+●例：列の追加
+　ALTER TABLE smp ADD
+  (gender CHAR(1)
+  CHECK(gender in) 'M','F'))　 (性別のチェック)
+
+●例：有効桁数の変更
+  ALTER TABLE smp  MODIFY
+  (smpname VARCHAR(60))　　（数値の変更）
+
+●例：列の削除
+  ALTER TABLE smp DROP
+  COLUMN salary　　　（slaryの列を削除）
+
+
+【テーブルの削除】
+●表を削除すると以下も削除される
+　・表の定義、制約　
+　・格納されていたデータ
+　・索引
+●構文の
+　　DROP TABLE テーブル名
+●索引だけの削除
+　・UNIQUE, PRIMARY KEY制約によって作成された索引は削除できない。
+　　（制約を削除すると一緒に削除される）
+●定義されている表やデータには影響はない
+●構文
+　　DROP INDEX 索引名
+
+【まとめ】
+●テーブルの作成は　CREATE　TABLE
+●テーブル名やカラム名は、各RDBMSの命名規則に従う
+●テーブルに保存する値に適したデータ型を定義する
+●データ型の表記は、各RDBMSに従う
+●テーブル作成後、列の追加、削除が可能
+●制約を大義するとプログラムなしで正しい値を維持することが可能になる
+●UNIQUE, PRIMARY KEY制約を定義すると索引が作成される
+●テーブルの削除は　DROP　TABLE
+
+-------------------------------------------------------------------------------------------
+
+【行と表の挿入】INSERT
+
+【新規レコードの挿入】
+　●INSERT文を使用する
+　●VALUSE句を使用して、１行ずつレコードを挿入することができる
+　●SELECT文を指定して、表のデータを挿入することができる（レコード/値のコピー）
+　●挿入を取り消す場合は、トランザクションをロールバック(ROLLBACK)する
+
+　●構文　１行挿入
+　INSERT INTO テーブル名
+　VALUES(値1，値2,....)
+
+  ●例
+  INSERT INTO smp
+  VALUES(50,'開発部')
+
+【注意事項】
+・制約違反、不適切なデータ型、有効桁数を超える値を指定すると実行時にエラーになる
+・対象列を指定する場合は、NOT NULL、PRIMARY KEYを指定した列を含むようにする。
+・値を入れない場合は、列指定を省略するか、VALUES句においてNULLと記述する
+
+【NULLの挿入例】
+●指定しない列はNULLになる
+●明示的にNULLを記述する（他人が見たときに意図的にNULLにしたのが明確になる）
+
+-----------------------------------------------------------------------------------
+
+【SELECTの挿入例】
+●INSERT INTO テーブル名
+　SELECT *｜列名 |式　FROM　テーブル名
+  WHERE 検索条件
+
+●例 
+INSERT INTO smp2 SELECT * FROM smp;
+(表に格納されているレコードを挿入対象にする場合は、挿入先の列の数とデータ型を合わせる必要がある)
+
+【既存値の変更】
+●UODATE文を使用する
+●WHERE句の条件に一致したレコードの対象列の値を変更することができる
+●対象の複数の列を変更することができる
+●変更を取り消す場合は、トランザクションをロールバック(ROLLBACK)する
+
+●構文
+UPDATE テーブル名
+SET 列名１＝値１| 式１[列名２＝値２[式１,.....]]
+[WHERE　対象レコード条件]
+
+●例
+UPDATE smp
+SET sal=sal*1.1 , smpno=NULL
+WHERE smpno=7788
+（値の代わりに式を指定することも可能。文字列、日付の場合は単一引用符で値も囲む）
+
+
+【注意事項】
+・WHERE句を指定しない場合は全レコードが対象になる
+・制約違反、不適切なデータ型、有効桁数おｗ超える値を指定するとエラーになる
+・FOREIGN KEY/参照整合制約により参照されている列は変更できない場合がある
+
+---------------------------------------------------------------------------------------
+
+【レコードの削除】
+●DELETE文を使用する
+●WHERE句の条件に一致したレコードの対象の値を削除することができる
+●削除を取り消す場合は、トランザクションをロールバックする
+
+●構文
+DELETE FROM テーブル名
+[WHERE 対象レコード条件]
+
+●例
+DELETE FROM smp
+WHERE smpno = 50　（テーブルの５０番を削除する）
+(FOREIGN KEY/参照整合制約により参照されるレコードは参照しているレコードを先に削除する)
+
+【注意事項】
+●WHERE句を指定しない場合は全レコードが削除対象となる
+●全行削除しても、テーブルは削除されない
+●FOREIGN KEY/参照整合制約により参照されているレコードは削除できない場合がある
+
+
+
+【変更の確定と取り消し】
+●変更処理は、確定または取り消しを行う必要がある
+●複数の変更をまとめて確定/取り消しすることができる
+●確定　　　COMMIT文を使用
+●取り消し　ROLLBACK文を使用
+●確定した変更を取り消すことはできない
+
+
+【トランザクション】
+●最後に変更を確定、取り消ししてから次の確定、取り消しまでの一連の処理のこと
+●BEGIN/START TRANSACTION文で開始する
+（BEGIN/START TRANSACTION文を使用せずにトランザクションを開始するRDBMCもある）
+
+----------------------------------------------------------------------------------
+
+【データの表示】
+●SELECT文を使用
+●SELECT句に表示する列を指定する
+●WHERE句を使用して表示対象となるレコードを限定することができる
+●ORDER BY句を使用してデータの表示順を指定するこちができる
+
+●構文
+SELECT *列名|式|定数
+FROM　テーブル名
+[WHERE 表示対象を限定する条件]
+[ORDER BY　並び順の基準にする列]
+
+●例
+SELECT　列１、列２....
+FROM smp
+
+●例
+SELECT sal + (sal * comm)
+FROM smp
+(足し算、引き算、掛け算、割り算が混在する場合、掛け算、割り算が先に処理される
+　かっこを使って処理の順番を変えることができる)
+
+【定数を表示する】
+●例
+SELECT　100000　FROM　smp
+●例
+SELECT '名前は',ename
+FROM smp
+（数値以外の定数は''で囲む。レコード件数分の定数が表示される）
+
+【注意事項】
+●SELECT句で指定した列名が結果表示のタイトルになる
+●式や定数を指定した場合は、指定した式や定数がタイトルとして表示される
+
+【別名を指定する】
+SELECT　[AS] 別名
+FROM　テーブル名
+
+SELECT [AS] ”別名”
+FROM　テーブル名
+（命名規則に反する別名を使用する場合は、""で別名を囲む）
+
+
+【重複値を省いて表示する】　DISTINICT
+SELECT　DISTINCT　列名
+FROM　テーブル名
+●例
+SELECT　DISTINCT smpno,job
+FROM smp
+(列名のかわりに式や定数を指定しても構わない。別名を指定することも可能)
+
+【注意事項】
+●DISTINCTは、表示するレコード全体に対して重複を省く指定をする
+●重複の列を指定する場合は、SELECT句の先頭に１度だけ指定する
+●間違った例
+SELECT smpno,DISTINST job
+FROM smp
+(jobだけ重複を省く、という書き方はできない)
+
+
+【表示対象レコードを限定する】WHERE
+SELECT (列、式、定数)
+FROM テーブル名
+WHERE 列名 比較演算子 (列、式、定数)
+(比較演算子の左右どちらかに列名を記述してもOK)
+
+
+【複数の条件を指定する】AND / OR
+....
+WHERE 列名　比較演算子　(列名、式、定数)
+AND | OR 列名 比較演算子　(列名、式、定数)
+(ANDとORが混在する場合、ANDが先に処理される。かっこを使用して処理の順番を変えることが可能)
+
+
+【範囲を指定する】BETWEEN
+例
+SELECT FROM smp
+WHERE smpno NOT BETWEEN 10 AND 20
+(NOT BETWEEN AND は OR と同じ意味)
+
+
+【値のリストと一致するものを表示する】　IN
+例
+SELECT FROM smp
+WHERE smpno IN (1123444)
+(INは、=OR=　と同じ)
+
+
+【指定した値を含むものを表示する】　LIKE
+●任意の１文字は、アンダースコア(＿)
+●０文字以上は、パーセント(%)
+例
+SELECT FROM smp
+WHERE aname LIKE'_〇〇〇%'
+(ESCAPEを使用してアンダースコア、パーセントそのものを含むものを求めることもできる)
+
+
+【NULLを条件にする】　comm
+SELECT FROM ｓｍｐ
+WHERE comm is NULL
+(comm=NULL または comm<>NULLと記述してもエラーにはならないが正しい値は得られない)
+
+
+【列の並び順を指定する】　ORDER BY
+SELECT FROM テーブル名
+[WHER 表示対象を限定する条件]
+ORDER BY 列名１ [ASC | DESC]
+(デフォルトの並び順はASC（昇順）)
+
+
+【注意事項】
+●ORDER BY句を指定しない場合、どんな順で表示されるか分からない
+●NULLが含まれる場合、RDBMSによっては表示順が異なる
+●NULLを先頭(NULL FIRST)か最後(NULL LAST)に表示するか指定できる場合もある
+
+---------------------------------------------------------------------------------------
