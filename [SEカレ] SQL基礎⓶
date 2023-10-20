@@ -205,6 +205,3 @@ ORDER BY 列名１ [ASC | DESC]
 ●ORDER BY句を指定しない場合、どんな順で表示されるか分からない
 ●NULLが含まれる場合、RDBMSによっては表示順が異なる
 ●NULLを先頭(NULL FIRST)か最後(NULL LAST)に表示するか指定できる場合もある
-
-
-【】
