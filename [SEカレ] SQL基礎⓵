@@ -2,9 +2,9 @@
 リレーショナルデータベースを扱うための言語。
 RDBNSの標準の言語として広く普及している。
 
-●DDL　                CREATE, ALTER, DROP
-●DCL                  GRANT,  REVOKE
-●DML                  SELECT, INSERT, UPDATE, DELETE
+●DDL (Data DEfinition Language) ➡　　CREATE, ALTER, DROP
+●DCL (Data Control Language)　➡　　　GRANT,  REVOKE
+●DML (Data Manipulation Language)  ➡ SELECT, INSERT, UPDATE, DELETE
 ●トランザクション制御   COMMIT, ROOLBACK
 
 【テーブル作成】
