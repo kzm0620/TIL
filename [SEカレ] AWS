@@ -57,10 +57,6 @@ AWSホスティングを選択する場合の使い分け
 
 
 
-
-
-
-
 【AWSの代表的なサービス】
 ●コンピューティングサービス (EC2,Lightsail)
 ●ストレージサービス (EBS,EFS,S3,Backup,Sync,StrageGateway)
