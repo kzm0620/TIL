@@ -1,0 +1,63 @@
+【データベース接続の仕組み】
+⓵データベース：データを整理、蓄積したもの
+⓶JDBC：JavaのプログラムとＤＢを繋ぐ
+　・クラス、インターフェースなどの集まり
+　・[JDBc API]　JDKに含まれる
+　・[JDBC ドライバ]　DB開発元が公開
+⓷SQL
+
+●JDBCがDBの違いを吸収するため、DBが異なってもJavaのプログラムはほぼ変わらない
+　➡APIに沿ったぴプログラムを書いておけば問題ない
+
+●DB、JDBCドライバのインストール
+●SQL
+●JDBCプログラミング
+●WebApp(DAO.DTO)
+
+
+【MySQLとJDBCドライバのインストール】
+⓵MySQLのインストール
+　・よく使われる「OSS」のDB
+　・MySQL「Community Server」を利用
+　・管理者アカウント「root」のパスワードを設定
+⓶JDBCドライバのダウンロード
+⓷「環境変数」の設定
+　・「PATH」➡MySQL内のbinフォルダ
+　・「CLASSPATH」➡JDBCドライブのファイル
+
+
+【JDBC】
+●JDBCドライバを環境変数CLASSPATHに要設定
+●接続するDBを指定する文字列
+ [jdbc:mysql://(DBサーバ名)/(DB名)]
+●JDBC 4.0(Java SE6)以降はClass.forName()が不要
+
+⓵DBに接続
+[Driver Manegerクラス]　
+・「JDBCドライバ」を管理するもの
+・getConectionメソッドを呼び出すときに使用する
+➡Connnection con = Driver Manager.getConection(URL、ユーザ名、パスワード);
+⓶ステートメントを生成
+[Connectionオブジェクト]
+・DBとの「接続情報」を管理
+・statement stmt = con.createStatement();
+➡繋いでいるDBにSQL文を発行するためのstatementオブジェクトを取得できる
+⓷SQLを実行
+[Statementオブジェクト]
+・「SQL文」を実行するためのオブジェクト
+・int count = stmt.executeUpdate(SQL文);
+⓸リソースを開放
+・closeメソッドを呼び出してDBとの接続を切る作業を行う
+・stmt.close();
+・con.close();
+  (オブジェクトを作られるcon→stamt、閉じるときはstmt→conと逆順になる)
+↓
+import java.sql.DriverManager;
+import java.sql.Connecttion;
+import java.sql.Statment;
+
+※DBへの接続情報はプログラムの上部で変数(定数)に格納しておくと便利
+●JDBCのプログラムは例外を発生する可能性があるため、
+ [try-cath]ブロックを記述する
+●close()メソッドは例外の有無に関わらず実行するためにfinalyブロックに記述する
+
