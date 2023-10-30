@@ -1,27 +1,127 @@
 【SQL】
-リレーショナルデータベースを扱うための言語。
+●リレーショナルデータベースを扱うための言語。
 RDBNSの標準の言語として広く普及している。
 
-●DDL (Data DEfinition Language) ➡　　CREATE, ALTER, DROP
-●DCL (Data Control Language)　➡　　　GRANT,  REVOKE
-●DML (Data Manipulation Language)  ➡ SELECT, INSERT, UPDATE, DELETE
-●トランザクション制御   COMMIT, ROOLBACK
+●RDBを操作する標準言語
+　・RDB (Relational DataBase)　表形式でデータを保管するデータベース
+　・大文字、小文字は区別しない
 
-【テーブル作成】
-●テーブル名、列名、列のデータ型を指定する
+【DDL：データ定義言語】(Data Definition Language)
+●CRETEでテーブルを作成したらDMLでデータを格納していく
+・CREATE (作成）
+・ALTER (変更)
+・DROP (削除)
+
+【DML：データ操作言語】(Data Manipulation Language)
+・SERECT (取得)
+・INSERT (挿入)
+・UPDATE (更新)
+・DELETE (削除)
+
+【DCL：データ制御言語】(Data Control Language)
+・GRANT (権限割当)
+・REVOKE (権限取消)
+
+【トランザクション制御】(取引記録)
+・COMMIT
+・ROOLBACK
+
+
+【⓵データベースの作成】
+●CREATE DATEBASE DB名;
+
+【⓶テーブルの作成】
+●CEREATE TABLE DB名.表名(列名、データ型[,...]);　([]は省略できると意味)
 ●テーブル名、列名には命名規則がある
 　予約語（SQLのキーワード）使用できない
 ●定義できる列の数には制限がある
+●例
+CREATE TABLE　sampledb.student(no int,name varchar,score int);
 
-CREATE TABLE　テーブル名
-(列名１　データ型（有効桁数）
-,列名2　データ型（有効桁数）
-..........
-,列名3　データ型（有効桁数）
-)
+【MySQL 整数のデータ型】
+・tinyint    -128～127　を表現
+・smalint    -32768～32767　を表現
+・mediumint  -8388608～8388607　を表現
+・int        -2147483648～2147483647　を表現
+・bright     -9223372036854775808～92234.........　を表現
 
-●DESC （デスクライブ）
-　テーブルを作成した後、そのような列で構成されているか確認できるコマンド
+【MySQL 文字列のデータ型】
+・char     固定長の文字列。
+　　　　　　文字列を格納したときに指定の文字列になるように右側のスペースで埋められる
+・varchar  可変長の文字列。
+　　　　　　指定の文字列以内の文字列を格納できる
+
+【実行手順】
+・コマンドプロンプトで[mysql -u root -p]コマンドを実行
+・パスワードを入力してMySQLに接続
+・[show database]でDBの一覧を確認することができる
+・[CREATE DATABASE DB名]でDBを作成
+・[CREATE TABLE DB名.表名(no int, PRIMARY KEY name varchar(10),socore inta)
+  (例として重複した番号が登録されそうになるとエラーを返す記述)
+・[show tables in 作成したDB名]で作成できているか確認できる
+・[desc DB名.テーブル名]でテーブルの列の状況が確認ができる
+●DESC （デスクライブ：説明）
+　テーブルを作成した後、どのような列で構成されているか確認できるコマンド
+
+---------------------------------------------------------------------------
+【SQLでデータ操作】　
+●ログイン機能、商品情報の表示、注文情報の登録
+
+⓵SELECT文：データを「取得」
+＜ SELECT 列名 [,列名,...] FROM 表名;　＞
+([]の前に「*」で全列取得可、「式」も利用可)
+SELECT * FROM student;
+SELECT no,score * 0.5 FROM student;
+
+⓶INSERT文：データを「挿入」
+＜ INSERT INTO 表明 [(列名,...)] VALUES(値,...); ＞
+INSERT INTO student VALUES(1, '中野', 80);
+
+⓷UPDATE文：データを「更新」
+＜ UPDATE 表名 SET 列名 ＝ 値 [,列名=値,...];　＞
+UPDATE student SET score = score + 5;
+
+⓸DELETE文：データを「削除」
+＜ DELETE FROM 表名; ＞
+DELETE FROM student;
+-----------------------------------------------------------------
+【SQLで条件指定】
+SELECT文、UPDATE文、DELETE文は「WHERE句」で条件を指定する
+
+●SELECT文 { * | 列名 [,列名...] }
+　 FROM 表明 [WHERE 所得条件]
+
+・関係演算子： > , >= , < , <= , =(等しい), <>(等しくない) 
+・論理演算子： AND , OR , NOT
+・特殊演算子： BERWEEN , LIKE　など
+SELECT * FROM student
+  WHERE 50 <= score AND score <= 80 
+  WHERE score BETWEEN 50 AND 80　(50点以上80点以下に該当するデータを探す)
+  WHERE name LIKE '%佐藤'  (%は０文字以上の任意の文字列、*は任意の文字列)
+
+●UPDATE 表明 SET 列名 = 値 [,列名=値...]
+　　[WHERE 更新条件]
+
+UPDATE student SET score =score + 5
+  WHERE no = 1 
+(１番の人のデータがプラス５点される記述)
+
+●DELETE FROM 表明
+   [WHERE 削除条件]
+
+DELETE FROM student
+   WHERE no = 1
+(１番のデータを削除する)
+-------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 
 【制約】
 ●テーブルに正しいデータを維持するためのルール
