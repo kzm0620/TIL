@@ -114,6 +114,185 @@ DELETE FROM student
 (１番のデータを削除する)
 -------------------------------------------------------------------
 
+※重要項目※
+
+【JDBC】
+Javaのプログラムとデータベースの間に入って仲立ちをしてくれる部品のようなもの
+
+【JDBC　更新処理】
+●JDBCドライバを環境変数CLASSPATHに要設定
+●JDBC(URL) 接続するDBを指定する文字列
+ ➡[jdbc:mysql://(DBサーバ名)/(DB名)]　と記述が指定されている
+●JDBC 4.0(Java SE6)以降はClass.forName()が不要
+
+⓵DBに接続
+[Driver Manegerクラス]　
+・「JDBCドライバ」を管理するもの
+・getConectionメソッドを呼び出すときに使用する
+➡Connnection con = Driver Manager.getConection(URL、ユーザ名、パスワード);
+
+⓶ステートメントを生成
+[Connectionオブジェクト]
+・DBとの「接続情報」を管理
+・statement stmt = con.createStatement();
+➡繋いでいるDBにSQL文を発行するためのstatementオブジェクトを取得できる
+
+⓷SQLを実行
+[Statementオブジェクト]
+・「SQL文」を実行するためのオブジェクト
+・int count = stmt.executeUpdate(SQL文);
+
+⓸リソースを開放
+・closeメソッドを呼び出してDBとの接続を切る作業を行う
+・stmt.close();
+・con.close();
+  (オブジェクトを作られるcon→stamt、閉じるときはstmt→conと逆順になる)
+↓
+import java.sql.DriverManager;
+import java.sql.Connecttion;
+import java.sql.Statment;
+(すべてjava.sqlのパッケージ含まれているクラスインターフェース)
+
+※DBへの接続情報はプログラムの上部で変数(定数)に格納しておくと便利
+●JDBCのプログラムは例外を発生する可能性があるため、
+ [try-cath]ブロックを記述する
+●close()メソッドは例外の有無に関わらず実行するためにfinalyブロックに記述する
+
+Connection con = null;
+Statement stmt = null;
+➡メソッド内で定義した変数の有効範囲はその変数を宣言したブロック内の内部のみ。
+　必ず実行させたい処理なのでtryブロックの外側で宣言する
+
+try {
+  //⓵DBに接続
+  con = DriverManager.getConnection(URL,USER,PASS);
+  //⓶ステートメントを生成
+  stmt = con.createStatement();
+  //⓷SQLを実行
+  int count = stmt.executeUpdate(sql);
+  System.out.println(count + "件更新しました");
+※JDBCのプログラムは例外を発生する可能性があるため、try-cachブロックを記述する
+} catch (Exception e) {
+  e.printStackTrace();
+} finally {
+  try
+    //⓸リソースを開放
+    if(stmt != null) stmt.close(); (nullじゃない場合にstmtを呼び出す)
+    if(con != null) con.close();
+  } catch (Exception e) {
+    e printStackTrace();
+  }
+※close()メソッドは例外の有無に関わらず実行するためにfinaryブロックに記述する
+-----------------------------------------------------------------------
+
+【JDBC 更新処理】
+●検索処理のプログラムの全体の流れを理解する
+●検索結果の処理方法を理解する
+
+⓵DBに接続
+⓶ステートメントを生成
+(⓵と⓶までは流れは同じ)
+
+⓷SQLを実行
+Result rs = stmt.executeQuery(SQL文);
+(実行するSQL文が更新系か検索系かによりステートメントから呼び出すメソッドが変わる)
+
+↓検索↓
+
+⓸検索結果の処理
+[Result Set] 「検索結果」を保持する
+  while(rs.next()) {
+     getterメソッド呼び出し
+  }
+●ResuitSetは持ってきたデータを表形式で管理している
+　カーソル(➡)でどの部分の行かを表している
+　[next()]メソッドでカーソル移動ができる(戻り値：tuue)
+　カーソルが最後の行を過ぎた場合に終了する(戻り値：false)
+●列へのアクセス方法
+  getXxxx("列名"/ 列番号)　※
+  String name = rs.getString("name");
+※getterメソッドの列番号は「１から始まる」ことに注意する
+
+【ResultSetの主なgetterメソッド】
+MySQLデータ型　　　 Javaデータ型　　　getterメソッド名
+tinyint            byte             getByte(...)
+smailint           short            getShort(...)
+int                int              getInt(...)
+bigint             long             getLong(...)
+char               String           getString(...)
+varrchar           String           getString(...)
+
+●import java.sql.ResultSet;　を追加で記述する
+  //⓷SQLを実行
+  rs = stmt.executeQuery(sql);
+  (戻り値でrsを取得することができる)
+  //⓸検索結果の処理
+  System.out.println("+-----+-------+");
+  System.out.println("| no  | name  |");
+  System.out.println("+-----+-------+");
+  while(rs.next()) {
+    System.out.print("| " + rs.getInt("no") + "￥t");
+    System.out.print("| " + rs.getString("name") + "￥t");
+    System.out.println("| " + rs.getInt("socre") + "￥t|");
+  }
+　(得られた情報を表形式で出力している)
+  System.out.println("+-----+-------+");
+} catch (Exception e) {
+  e.printStackTrace();
+} finary {
+  try.......
+----------------------------------------------------------------
+
+【JDBC Prepared Statementの利用】
+●Prepared Statementの特徴や使う場面を理解する
+●Prepared Statementの使い方を知る
+
+【Prepared Statement】
+●似たSQL文を「繰り返し」実行するときに使用すると高速化する
+⓵「？(INパラメータ)」入りSQL文を指定
+  INSERT INTO student VALUES(?.?.?)
+⓶「setterメソッド」で？に値を設定
+　(？の部分を穴埋めするメソッド)
+　記述例
+　➡ps.setInt(1.7); 
+　➡ps.setString(2."田中");
+●setterメソッドの第一引数(INパラメータの場所の指定)は１から始まる
+●setterメソッドの名前は第二引数(？に設定するデータ)のデータ型に合わせる
+⓷SQLを実行
+----------------------------------------------------------------
+
+【WEBアプリとデータベースの連携】
+●WEBアプリの開発方法(サーブレットとJSPの連携方法を振り返る)
+●サーブレットとDBの連携方法を理解する
+
+[実行]
+↓　WEBサーバーにリクエスト
+[Controller : サーブレット]
+do Post(～) {
+  Connection con = DriverManeger.getConnection(URL,USER,PASS);
+  Statement stmt = con.createStatement();
+  ResultSet rs = stmt.executeQuery(sql);
+↓ SQL文を実行（）
+  (SELECT name FROM student
+    WHERE no = 1)
+  (studentテーブルの１番の名前の情報を取得)
+  rs.next(); （カーソルを下に移動する作業）
+  String name = rs.getString("name");　（DBの列名からのname）
+    :
+  req.setAttribute("name", name); 
+　(JSPでも利用するため変数nameをリクエストスコープに格納)
+  RequestDispatcher rd = req.getReqestDispatcher("/~.jsp");
+  rd.forward(req,res);
+  }
+↓ forward
+[view : JSP]
+生徒名は<%= request.getAttribute("name") %> です
+(setAttributeで格納した"name")
+↓　レスポンス
+
+
+
+
 
 
 
