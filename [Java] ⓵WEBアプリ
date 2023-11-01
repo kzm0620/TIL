@@ -1,0 +1,162 @@
+【WEBアプリケーション】
+⓵「WEBブラウザ」：WEBページを表示するソフトウェア
+⓶「WEBサーバー」：WEBページの情報を提供するソフトウェア(コンピュータ)
+　・リクエスト；WEBページの情報をサーバに要求すること
+　・レスポンス：リクエストに対してサーバーが情報を返すこと
+　　(リクエストでファイル名を省略した場合はindex.htmlなどが自動で呼び出される)
+●WEB環境で動くプログラムを「WEBアプリケーション」といい、
+　「サーバーサイド(バックエンド)」と「クライアントサイド(フロントサイド)」に分かれる
+
+【Apache Tomcat】
+●「WEBサーバー」と「WEBコンテナ」の機能をもつJava製の無料ソフトウェア
+　・WEBコンテナ：「サーブレット」と「JSP」の実行環境
+　➡自分のPCがサーバーになる
+
+【インストール手順】
+　⓵zipファイルをダウンロードして解凍する
+　⓶環境変数の設定
+  ・CLASSPATH ➡ .;(Tomcatフォルダ)￥lib￥servlet-api.jar
+　  (Javaのコンパイラや実行環境がクラスファイルなどを探しに行く場所を指定する環境変数)
+  ・CATALINA_HOME ➡ Tomcatフォルダを作成 
+    (Tomcatフォルダの場所を指定する環境変数)
+●PCの規格に合ったbit数のファイルをインストールする(32.64)
+
+
+【WEBアプリケーションのフォルダ構成】
+●コンテキストルート
+　➡WEBアプリケーションの最上位フォルダ。
+　・ツリー構造で根(root)にあたるためルートと呼ばれる
+　・WEb.INFフォルダか、それ以外かを格納する
+
+【WEBアプリの実行手順】
+⓵ファイルを正しい場所に格納
+⓶WEBサーバを起動する (bin￥startup.bat)　(SJISで日本語化できる)
+⓷ブラウザで実行 (http://localhost:8080/(コンテキストール名)/～)
+⓸起動しているサーバーを終了する (bin￥shutdown.bat)
+---------------------------------------------------------------
+
+【サーブレット】
+●「サーバー」側で働くJavaプログラム
+
+【サーブレットの作り方】
+⓵４つの「パケージ」をインストール
+ ・import java *;                     //PrintWriter
+ ・import javax.servlet. *;           //GenericServletなど
+ ・import javax.servlet.http.*;       //HttpServletなど
+ ・import javax.servlet.annotation.*; //アノテーション機能
+   (注釈の意味。@から始まる記述でPGに補足情報を加えることができる)
+   @webservlet("/first") 
+   (@webservlet：サーブレットを呼び出すＵＲＬパスを指定するアノテーション(マッピング名))
+⓶HttpServletクラスを継承
+   public class FirstServlet extende HttpServlet {
+⓷アノテーションで「マッピング名を指定」
+⓸doGet() / doPost()をオーバーライドして記述する
+　・出力の「コンテンツタイプ」を指定
+　・「PrintWriter」を取得
+　・「」で出力
+  (URl直打、リンクをクリック method = "get"などの時に呼び出される)
+  (method = "post"を指定したときに呼び出される)
+     public void doGet(- req. - res) throws - {
+       res.setContentType("text/html;charset = utf-8");
+       (setContentType:文字エンコーデング仕様などを指定する)
+       PrintWriter out = res.getWriter();
+       (PrintWriter getWriter():WEBブラウザに文字列データを送信するための
+　　　　　PrintWriterオブジェクトを取得する)
+       out.println("<html>");
+       out.println("</html>"):
+     }
+   }
+　➡http://localhost:8080/javaweb/first で実行
+    (javaweb➡コンテキストルート名、first➡マッピング名)
+    ※サーブレットのプログラムを修正したらTomCatを再起動する必要がある
+-------------------------------------------------------------------
+
+【サーブレットのフォーム連携】
+⓵フォームの入力情報は「name属性の値 = 入力値」の形でリクエストに格納される
+ (name属性の値に対して送信される入力値が１つのときと複数のときがある)
+⓶「doGet() / doPost()」の引数[req]がもつメソッドから入力値を取得
+●void setCharacterEncoding(String en)
+ (リクエストデータを読み取る文字コードを指定)
+ (エンコーディング➡ルールに基づいて文字情報を０と１の並びに変換すること)
+ req.setCharacterEncoding("utf-8");
+⓶String getParameter(String name)
+  String[] getParmeterValues(String name)
+  (パラメータ名nameの入力値を取得するメソッドが２つある)
+  (getParameter：Stiringに対して戻り値が１つ受け取るメソッド)
+  (getPaarmeterValues：Stringの配列(複数の値)を受け取るメソッド)
+  String n = req.getParameter("name");
+●指定したname属性の対する入力値が送られてきてない場合、戻り値はnullになる
+-------------------------------------------------------------------
+
+【サーブレットのセッション管理】
+●複数のリクエスト、レスポンスにまたがって「ユーザーの管理」と「データの管理」をする仕組み
+●レスポンスを返すとサーブレットで使った変数の情報はメモリ上から消えてしまう
+
+●「req」からセッションオブジェクトを取得
+　➡・セッションオブジェクトの情報はレスポンスを返した後もサーバ上に残り続ける
+　　・セッションIDをユーザーごとに生成
+　　・セッションIDの管理はWEBサーバーとWEBブラウザがやってくれるのでOK
+　　・セッションオブジェクトに格納するデータはObject型として扱う(キャストが必要)
+⓵HttpSession getSession(boolean create)
+  (初回時に true➡生成 / false➡null)
+　・セッションオブジェクトのデータを管理
+⓶void setAttribute(String name , Object value)
+  (valueをnameという名前で格納)
+⓷Object getAttribute(String name)
+  (nameという名前のデータを取得)
+
+●void invalidate()メソッド
+　セッションオブジェクトに格納されている情報を破棄して、
+　セッションを無効にする(ログアウトする)
+●ブラウザから一定時間アクセスがない場合、セッションオブジェクトは破棄される
+ (Tomcatのセッションタイムアウトはデフォルトでは３０分)
+-----------------------------------------------------------------
+
+【JSP (Java Server Pages)】
+●HTMLに独自の「タグ」でJavaのコードを埋め込んで動的なWEBページを作る技術
+●サーブレットはJavaの中にHTMLが含まれる
+　JSPではHTMLの中にJavaが含まれる
+●JSPサーブレット
+　➡JSPが初めてアクセスされたときに自動変換されて生成されるサーブレット
+　・２回目以降のアクセス時はメモリ上に残っているオブジェクトが直接呼び出される
+●pageディレクティブタグ
+　➡JSPファイル全体の設定
+   <% @page contentType = "text/html; charaset = utf-8" %>
+　・JSPで日本語を出力するときにはpageディレクトリを書く
+
+【JSPのタグ】
+⓵ディレクティブタグ　<%@ ～ %>　★覚える
+●JSPをサーブレットに変換するときに利用する情報を指定するタグ。
+　directiveは指令、命令という意味。
+●サーブレット変換時に必要な設定を記述
+　<%@page contentType = "text/html;charset = utf-8 %>
+　<%@page import = "java.util.*" %>
+●includeディレクティブタグ
+　➡JSPファイルに他のHTMLファイルなどを挿入する
+　<%@include file = "ファイル名" %>
+●taglibディレクティブタグ
+　➡JSPファイル内でカスタムタグを利用する
+　<%@taglib url = "タグのライブラリのURL"
+　　　　　　　　　　　　　　　　prefix = "プレフィックス名" %>                                     
+⓶宣言タグ　<%! 宣言 %>
+●メンバ変数やメソッドを定義
+　<%! String fortune() {～} %>
+
+⓷式宣言タグ　<%= 式 %> 　★覚える
+●出力したい式を記述
+　<%= i + j %>
+●式タグの中身はHTMLとして処理されるため、式の後にはセミコロンを付けない
+
+⓸スクリプトレット　<% Javaのコード %>　★覚える
+●Javaのプログラムを記述
+　<% for(int i = 0; i <3 : i++) { %>
+
+⓹コメント　<%-- コメント --%>
+●JSPのコメントを記述
+●JSPのコメントはブラウザに送られないため、ソースを表示しても記述されない
+
+⓺アクションタグ　<タグ名　属性名 = "値"/>
+●特定の処理をシンプルに書くためのタグ
+　<jsp:useBean id = "counter" scope = "session" class = "Counter" />
+
+
