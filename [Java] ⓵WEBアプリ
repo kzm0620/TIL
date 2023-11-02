@@ -158,5 +158,98 @@
 ⓺アクションタグ　<タグ名　属性名 = "値"/>
 ●特定の処理をシンプルに書くためのタグ
 　<jsp:useBean id = "counter" scope = "session" class = "Counter" />
+----------------------------------------------------------------------
 
+【JSPのフォーム連携】
+⓵フォームの入力情報は「name属性の値 = 入力値」の形でリクエストに格納される
+⓶「暗黙オブジェクト」のrequestがもつメソッドから入力値を取得
+  <% request.setCharcterEncoding("utf-8"); %>
+  名前 : <%= request.getParameter("name") %>
+ ●暗黙オブジェクト➡JSPサーブレット内で自動で宣言されうるオブジェクトのこと
+　・HttpServletRequest request
+　・HttpServletResponse rewsponse
+　・HttpSession session
+　・JspWriter out 
+　　などをを自動で宣言してくれる
+--------------------------------------------------------------------]
 
+【サーブレットとJSPの連携】
+●この２つは単体で使うよりも、「組み合わせ」で使うことが多い
+●１つのファイルの中にJavaとHTMLが混ざっていると大規模な開発では問題が生じる
+　➡「開発の分担」や「変更対応」が難しい
+
+【サーブレット＋JSPの連携方法】
+●リクエストを受ける
+　↓
+●リクエストのエンコーディング
+ (req.setCharcterEncoding()メソッド)
+●入力情報の取得
+ (req.getParameter()メソッド)
+ ↓
+●入力チェック・データ編集
+ if(age.equals("child")) {
+   age = "18才未満";
+ } else {
+   age = "18才以上";
+}
+ ↓
+●リクエストオブジェクトに格納
+ (req.setAttribute("age","age"))
+ （引数は２つ指定して変数ageの値を""age"という名前で格納することができる）
+　↓
+●JSPに転送(フォワード)
+ RequestDispatcher rd = req.getRequestDispatcher(URL) 
+ rd.forward(req.res)
+・(RequestDispatcher req.getRequestDispatcher(String path)
+  指定したオブジェクトを取得する)
+・(void forward(ServletRequest req, ServletResponse res)
+  このRequestDispatcherに指定されたpathに対してリクエストと
+　レスポンスを転送する)
+　↓
+●HTMLの出力
+ (リクエストオブジェクトから取得)
+ (request.getAttribute("age"))
+・リクエストオブジェクトに対してデータを格納・取得するときの名前は一致させる
+　↓
+●レスポンスを返す
+-------------------------------------------------------------------
+
+【Java Beans】
+●部品化したクラスを作るための「設計ルール」
+●JavaBewnsに従って作られたクラスを「Bean」という
+
+【Java Bearnsの設計ルール】
+⓵クラスを「public」指定
+⓶引数なしのコンストラクタを定義
+⓷「java.io.Serializable」インターフェースを実装
+・java.io.Serializable
+　➡そのクラスがシリアライズ(直列化)可能であることを示すインターフェース
+・直列化
+　➡データをビット列で表現すること。ファイル保存やリモート転送ができるようになる
+⓸「パッケージ化」
+⓹「setter / getter」メソッドを定義
+　➡メンバ変数に値を設定するのが「setterメソッド」
+　　値を取得するのが「getterメソッド」
+●setterメソッドの名前は、set + メンバ変数名
+●getterメソッドの名前は、get + メンバ変数名
+---------------------------------------------------------------
+
+【アクションタグ】
+●特定の「処理」を実行するためのJSPタグ
+⓵useBeanタグ：指定したスコープのBeanオブジェクトを「取得する」
+　なければ新規生成してスコープに「格納」する
+[記述例]
+<jsp:useBean id = "参照名"
+  scope = "有効範囲" class = "クラス名" />
+  (スコープ有効範囲は page.request, session, applicationの４つ)
+　・page：JSPページの中で有効
+　・request：レスポンスを返すまで有効
+　・session：セッションが破棄されるまで有効
+　・application：WEBサーバーが稼働している間は有効
+
+⓶setPropertyタグ：「setter」メソッドを呼び出す
+<jsp:setPropety name = "参照例" property =  "プロパティ名" value = "値" >
+●プロパティ：Bean内にあるsetterメソッドやgetterメソッドを併せ持つメンバ変数のこと
+
+⓷getPropertyタグ：「getter」メソッドを呼び出す
+<jsp:getProperty name = "参照名" property = "プロパティ名" />
